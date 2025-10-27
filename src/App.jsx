@@ -9,7 +9,6 @@ import Login from './pages/Login';
 import Admin from './pages/Admin';
 import './style.css';
 
-// Database state - would be in a real backend in production
 const initialDatabase = {
     admin: {
         username: 'aaa',
@@ -37,17 +36,17 @@ const initialDatabase = {
     },
     projects: {
         'Web': [
-        { id: 1, name: 'Project 1', thumbnail: '/api/placeholder/250/150', description: 'web1', likes: 10, views: 100, downloads: 5 },
-        { id: 2, name: 'Project 2', thumbnail: '/api/placeholder/250/150', description: 'web2', likes: 15, views: 150, downloads: 8 }
+        { id: 1, name: 'Project 1', thumbnail: '/api/placeholder/250/150', description: 'web1', likes: 10, views: 10, downloads: 10 },
+        { id: 2, name: 'Project 2', thumbnail: '/api/placeholder/250/150', description: 'web2', likes: 10, views: 10, downloads: 10 }
         ],
         'App': [
-        { id: 3, name: 'Project 3', thumbnail: '/api/placeholder/250/150', description: 'app1', likes: 20, views: 200, downloads: 12 }
+        { id: 3, name: 'Project 3', thumbnail: '/api/placeholder/250/150', description: 'app1', likes: 10, views: 10, downloads: 10 }
         ],
         'Game': [
-        { id: 4, name: 'Project 4', thumbnail: '/api/placeholder/250/150', description: 'game1', likes: 25, views: 250, downloads: 15 }
+        { id: 4, name: 'Project 4', thumbnail: '/api/placeholder/250/150', description: 'game1', likes: 10, views: 10, downloads: 10 }
         ],
         'ETC': [
-        { id: 5, name: 'Project 5', thumbnail: '/api/placeholder/250/150', description: 'etc1', likes: 25, views: 250, downloads: 15 }
+        { id: 5, name: 'Project 5', thumbnail: '/api/placeholder/250/150', description: 'etc1', likes: 10, views: 10, downloads: 10 }
         ],
     }
 };

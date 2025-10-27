@@ -40,7 +40,7 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
     return (
         <div className="admin-container">
         <div className="admin-header">
-            <h1 className="admin-title">Admin Dashboard</h1>
+            <h1 className="admin-title">Admin Page</h1>
             <div className="admin-actions">
             <button onClick={onBackToSite} className="btn-back">
                 Back to Site
