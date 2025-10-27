@@ -1,16 +1,16 @@
 import React from 'react';
 
-const guestbookMessages = [
-    { author: "A", message: "aaaaaaaa" },
-    { author: "B", message: "bbbbbbbbb" },
-    { author: "C", message: "ccccccccc" },
-    { author: "D", message: "dddddddddd" },
-    { author: "E", message: "eeeeeeeeee" },
-    { author: "F", message: "fffffffff" },
-    { author: "G", message: "gggggggg" }
-];
-
 export default function Home() {
+    const guestbookMessages = [
+        { author: "A", message: "aaaaaaaa" },
+        { author: "B", message: "bbbbbbbbb" },
+        { author: "C", message: "ccccccccc" },
+        { author: "D", message: "dddddddddd" },
+        { author: "E", message: "eeeeeeeeee" },
+        { author: "F", message: "fffffffff" },
+        { author: "G", message: "gggggggg" }
+    ];
+
     const duplicatedMessages = [...guestbookMessages, ...guestbookMessages];
 
     return (
@@ -21,7 +21,7 @@ export default function Home() {
             Hi! I'm a Computer Science student at UW-Madison, eager to learn and hone my craft as a developer!
             </span>
         </p>
-        
+
         {/* Guestbook Animation */}
         <div className="guestbook-container">
             <div className="guestbook-scroll">

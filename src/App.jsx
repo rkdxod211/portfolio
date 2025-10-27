@@ -11,42 +11,45 @@ import './style.css';
 
 // Database state - would be in a real backend in production
 const initialDatabase = {
-  admin: {
-    username: 'admin',
-    password: 'password123'
-  },
-  about: {
-    introduction: 'add later',
-    interests: 'add later'
-  },
-  experience: {
-    languages: 'Python • Java • HTML/CSS • Javascript',
-    clubs: [
-      { title: 'Club 1', detail: 'Member' },
-      { title: 'Activity 1', detail: 'Participant' }
-    ],
-    work: [
-      { title: 'Work 1', detail: 'Company Name (when)' },
-      { title: 'Intership 1', detail: 'Company Name (when)' }
-    ]
-  },
-  contact: {
-    emails: ['tkang55@wisc.edu', 'taeyoung070211@gmail.com'],
-    github: 'https://github.com/rkdxod211',
-    linkedin: 'https://www.linkedin.com/in/taeyoung-kang/'
-  },
-  projects: {
-    'Web Development': [
-      { id: 1, name: 'Project 1', thumbnail: '/api/placeholder/250/150', description: 'A web project', likes: 10, views: 100, downloads: 5 },
-      { id: 2, name: 'Project 2', thumbnail: '/api/placeholder/250/150', description: 'Another web project', likes: 15, views: 150, downloads: 8 }
-    ],
-    'Data Science': [
-      { id: 3, name: 'Project 3', thumbnail: '/api/placeholder/250/150', description: 'A data project', likes: 20, views: 200, downloads: 12 }
-    ],
-    'Mobile Apps': [
-      { id: 4, name: 'Project 4', thumbnail: '/api/placeholder/250/150', description: 'A mobile app', likes: 25, views: 250, downloads: 15 }
-    ]
-  }
+    admin: {
+        username: 'aaa',
+        password: '123123'
+    },
+    about: {
+        introduction: 'add later',
+        interests: 'add later'
+    },
+    experience: {
+        languages: 'Python • Java • HTML/CSS • Javascript',
+        clubs: [
+        { title: 'Club 1', detail: 'Member' },
+        { title: 'Activity 1', detail: 'Participant' }
+        ],
+        work: [
+        { title: 'Work 1', detail: 'Company Name (when)' },
+        { title: 'Intership 1', detail: 'Company Name (when)' }
+        ]
+    },
+    contact: {
+        emails: ['tkang55@wisc.edu', 'taeyoung070211@gmail.com'],
+        github: 'https://github.com/rkdxod211',
+        linkedin: 'https://www.linkedin.com/in/taeyoung-kang/'
+    },
+    projects: {
+        'Web': [
+        { id: 1, name: 'Project 1', thumbnail: '/api/placeholder/250/150', description: 'web1', likes: 10, views: 100, downloads: 5 },
+        { id: 2, name: 'Project 2', thumbnail: '/api/placeholder/250/150', description: 'web2', likes: 15, views: 150, downloads: 8 }
+        ],
+        'App': [
+        { id: 3, name: 'Project 3', thumbnail: '/api/placeholder/250/150', description: 'app1', likes: 20, views: 200, downloads: 12 }
+        ],
+        'Game': [
+        { id: 4, name: 'Project 4', thumbnail: '/api/placeholder/250/150', description: 'game1', likes: 25, views: 250, downloads: 15 }
+        ],
+        'ETC': [
+        { id: 5, name: 'Project 5', thumbnail: '/api/placeholder/250/150', description: 'etc1', likes: 25, views: 250, downloads: 15 }
+        ],
+    }
 };
 
 export default function App() {
