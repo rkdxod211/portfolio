@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Heart, Eye, Download, Grid3x3, List, FileText } from 'lucide-react';
+import { Heart, Eye, Download, Grid3x3, List, FileText, Github, ArrowLeft } from 'lucide-react';
 
 export default function Projects({ database }) {
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedProject, setSelectedProject] = useState(null);
     const [viewMode, setViewMode] = useState("tile"); 
     const [likedProjects, setLikedProjects] = useState({});
 
@@ -13,12 +14,107 @@ export default function Projects({ database }) {
         }));
     };
 
+    const handleProjectClick = (project) => {
+        setSelectedProject(project);
+    };
+
+    const handleBackToList = () => {
+        setSelectedProject(null);
+    };
+
+    const handleDownload = (projectName) => {
+        // Placeholder for download functionality
+        alert(`Download functionality for ${projectName} will be implemented with backend`);
+    };
+
+    // If a specific project is selected, show detailed view
+    if (selectedProject) {
+        return (
+            <div>
+                <button onClick={handleBackToList} className="back-to-list-btn">
+                    <ArrowLeft size={20} />
+                    Back to Projects
+                </button>
+
+                <div className="project-detail-container">
+                    <div className="project-detail-header">
+                        <h1>{selectedProject.name}</h1>
+                    </div>
+
+                    <div className="project-detail-content">
+                        <div className="project-detail-image">
+                            <img 
+                                src={selectedProject.thumbnail} 
+                                alt={selectedProject.name}
+                            />
+                        </div>
+
+                        <div className="project-detail-info">
+                            <div className="project-detail-section">
+                                <h3>Description</h3>
+                                <p>{selectedProject.description}</p>
+                            </div>
+
+                            <div className="project-detail-stats">
+                                <div className="detail-stat-item">
+                                    <button 
+                                        className={`like-btn ${likedProjects[selectedProject.id] ? 'liked' : ''}`}
+                                        onClick={() => toggleLike(selectedProject.id)}
+                                    >
+                                        <Heart 
+                                            size={24} 
+                                            fill={likedProjects[selectedProject.id] ? 'currentColor' : 'none'} 
+                                        />
+                                    </button>
+                                    <span>{selectedProject.likes + (likedProjects[selectedProject.id] ? 1 : 0)} Likes</span>
+                                </div>
+                                <div className="detail-stat-item">
+                                    <Eye size={24} />
+                                    <span>{selectedProject.views} Views</span>
+                                </div>
+                                <div className="detail-stat-item">
+                                    <Download size={24} />
+                                    <span>{selectedProject.downloads} Downloads</span>
+                                </div>
+                            </div>
+
+                            <div className="project-detail-actions">
+                                {selectedProject.githubLink && (
+                                    <a 
+                                        href={selectedProject.githubLink}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="project-action-btn github-btn"
+                                    >
+                                        <Github size={20} />
+                                        View on GitHub
+                                    </a>
+                                )}
+                                <button 
+                                    onClick={() => handleDownload(selectedProject.name)}
+                                    className="project-action-btn download-btn"
+                                >
+                                    <Download size={20} />
+                                    Download Project
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     const renderProjects = () => {
         if (!selectedCategory) return null;
         const projects = database.projects[selectedCategory] || [];
         
         return projects.map((project) => (
-            <div key={project.id} className="project-card">
+            <div 
+                key={project.id} 
+                className="project-card"
+                onClick={() => handleProjectClick(project)}
+            >
                 {viewMode === 'tile' && (
                     <img 
                         src={project.thumbnail} 
@@ -44,7 +140,10 @@ export default function Projects({ database }) {
                     <div className="stat-item">
                         <button 
                             className={`like-btn ${likedProjects[project.id] ? 'liked' : ''}`}
-                            onClick={() => toggleLike(project.id)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                toggleLike(project.id);
+                            }}
                         >
                             <Heart 
                                 size={16} 

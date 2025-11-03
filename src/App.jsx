@@ -21,12 +21,12 @@ const initialDatabase = {
     experience: {
         languages: 'Python • Java • HTML/CSS • Javascript',
         clubs: [
-        { title: 'Club 1', detail: 'Member' },
-        { title: 'Activity 1', detail: 'Participant' }
+            { title: 'Club 1', detail: 'Member' },
+            { title: 'Activity 1', detail: 'Participant' }
         ],
         work: [
-        { title: 'Work 1', detail: 'Company Name (when)' },
-        { title: 'Intership 1', detail: 'Company Name (when)' }
+            { title: 'Work 1', detail: 'Company Name (when)' },
+            { title: 'Intership 1', detail: 'Company Name (when)' }
         ]
     },
     contact: {
@@ -36,55 +36,97 @@ const initialDatabase = {
     },
     projects: {
         'Web': [
-        { id: 1, name: 'Project 1', thumbnail: '/api/placeholder/250/150', description: 'web1', likes: 10, views: 10, downloads: 10 },
-        { id: 2, name: 'Project 2', thumbnail: '/api/placeholder/250/150', description: 'web2', likes: 10, views: 10, downloads: 10 }
+            { 
+                id: 1, 
+                name: 'Personal Portfolio Website', 
+                thumbnail: '/images/web_portfolio.png', 
+                description: 'description', 
+                likes: 10, 
+                views: 10, 
+                downloads: 10,
+                githubLink: 'https://github.com/rkdxod211/portfolio'
+            },
+            { 
+                id: 2, 
+                name: 'Project 2', 
+                thumbnail: '/images', 
+                description: 'web2', 
+                likes: 10, 
+                views: 10, 
+                downloads: 10,
+                githubLink: 'https://github.com/rkdxod211'
+            }
         ],
         'App': [
-        { id: 3, name: 'Project 3', thumbnail: '/api/placeholder/250/150', description: 'app1', likes: 10, views: 10, downloads: 10 }
+            { 
+                id: 3, 
+                name: 'Project 3', 
+                thumbnail: '/images', 
+                description: 'app1', 
+                likes: 10, 
+                views: 10, 
+                downloads: 10,
+                githubLink: 'https://github.com/rkdxod211'
+            }
         ],
         'Game': [
-        { id: 4, name: 'Project 4', thumbnail: '/api/placeholder/250/150', description: 'game1', likes: 10, views: 10, downloads: 10 }
+            { 
+                id: 4, 
+                name: 'Project 4', 
+                thumbnail: '/images', 
+                description: 'game1', 
+                likes: 10, 
+                views: 10, 
+                downloads: 10,
+                githubLink: 'https://github.com/rkdxod211'
+            }
         ],
         'ETC': [
-        { id: 5, name: 'Project 5', thumbnail: '/api/placeholder/250/150', description: 'etc1', likes: 10, views: 10, downloads: 10 }
+            { 
+                id: 5, 
+                name: 'Project 5', 
+                thumbnail: '/api/placeholder/250/150', 
+                description: 'etc1', 
+                likes: 10, 
+                views: 10, 
+                downloads: 10,
+                githubLink: ''
+            }
         ],
     }
 };
 
 export default function App() {
     const [currentPage, setCurrentPage] = useState(0);
-    const [viewMode, setViewMode] = useState('portfolio'); // 'portfolio', 'login', 'admin'
+    const [viewMode, setViewMode] = useState('portfolio'); 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [database, setDatabase] = useState(initialDatabase);
-    
     const scrollContainerRef = useRef(null);
     const pages = ['home', 'about', 'projects', 'experience', 'contact'];
 
     useEffect(() => {
         const container = scrollContainerRef.current;
         if (!container || viewMode !== 'portfolio') return;
-        
+
         const handleScroll = () => {
             const scrollPosition = container.scrollTop;
             const viewportHeight = container.clientHeight;
-            
             const sections = document.querySelectorAll('.page-section');
             let closestPage = 0;
             let closestDistance = Infinity;
-            
+
             sections.forEach((section, index) => {
                 const sectionTop = section.offsetTop;
                 const distanceFromCenter = Math.abs(sectionTop - (scrollPosition + viewportHeight / 2));
-                
                 if (distanceFromCenter < closestDistance) {
                     closestDistance = distanceFromCenter;
                     closestPage = index;
                 }
             });
-            
+
             setCurrentPage(closestPage);
         };
-        
+
         container.addEventListener('scroll', handleScroll);
         return () => container.removeEventListener('scroll', handleScroll);
     }, [viewMode]);
@@ -92,7 +134,7 @@ export default function App() {
     const scrollToPage = (pageIndex) => {
         const container = scrollContainerRef.current;
         if (!container) return;
-        
+
         const sections = document.querySelectorAll('.page-section');
         if (sections[pageIndex]) {
             const targetSection = sections[pageIndex];
@@ -162,7 +204,6 @@ export default function App() {
                 pages={pages}
                 onAdminClick={handleAdminClick}
             />
-            
             <div className="main-content">
                 <div className="scroll-container" ref={scrollContainerRef}>
                     <div className="page-section">
@@ -173,7 +214,6 @@ export default function App() {
                             </div>
                         )}
                     </div>
-
                     <div className="page-section">
                         <About database={database} />
                         {currentPage === 1 && (
@@ -182,7 +222,6 @@ export default function App() {
                             </div>
                         )}
                     </div>
-
                     <div className="page-section">
                         <Projects database={database} />
                         {currentPage === 2 && (
@@ -191,7 +230,6 @@ export default function App() {
                             </div>
                         )}
                     </div>
-
                     <div className="page-section">
                         <Experience database={database} />
                         {currentPage === 3 && (
@@ -200,7 +238,6 @@ export default function App() {
                             </div>
                         )}
                     </div>
-
                     <div className="page-section">
                         <Contact database={database} />
                         {currentPage === 4 && (

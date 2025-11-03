@@ -145,6 +145,16 @@ p {
     text-decoration: underline;
 }
 
+.visitorCount {
+    color: #0479AF;
+    font-weight:600;
+    text-align: left;
+    align-self:flex-start;
+    font-size:18px;
+    margin-left:40px;
+    margin-top:20px;
+}
+
 /* Typing Effect */
 .type {
     font-family: "Exo 2", sans-serif;
@@ -188,6 +198,8 @@ p {
     gap: 40px;
     padding: 20px;
 }
+
+
 
 @keyframes scroll-left {
     0% { transform: translateX(0); }
@@ -438,6 +450,124 @@ p {
     font-size: 40px;
     color: #0479AF;
     margin-bottom: 50px;;
+}
+
+/* Add these styles to your existing style.css file */
+
+/* Guestbook Form Section */
+.guestbook-form-section {
+    margin-top: 80px;
+    margin-bottom: 100px;
+}
+
+.guestbook-form-section h2 {
+    font-family: "Exo 2", sans-serif;
+    font-weight: 700;
+    font-size: 50px;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.guestbook-form {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid white;
+    border-radius: 15px;
+    padding: 40px;
+    max-width: 600px;
+}
+
+.guestbook-form-group {
+    margin-bottom: 25px;
+}
+
+.guestbook-label {
+    display: block;
+    font-family: "Exo 2", sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.guestbook-input {
+    width: 100%;
+    padding: 15px;
+    font-family: "Exo 2", sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    border: 2px solid #0479AF;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    transition: all 0.3s;
+}
+
+.guestbook-input:focus {
+    outline: none;
+    border-color: white;
+    background: white;
+    transform: scale(1.02);
+}
+
+.guestbook-input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+    font-weight: 400;
+}
+
+.guestbook-textarea {
+    width: 100%;
+    padding: 15px;
+    font-family: "Exo 2", sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    border: 2px solid #0479AF;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    resize: vertical;
+    min-height: 120px;
+    transition: all 0.3s;
+}
+
+.guestbook-textarea:focus {
+    outline: none;
+    border-color: white;
+    background: white;
+    transform: scale(1.02);
+}
+
+.guestbook-textarea::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+    font-weight: 400;
+}
+
+.guestbook-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 40px;
+    background: #0479AF;
+    color: white;
+    border: 2px solid white;
+    border-radius: 10px;
+    font-family: "Exo 2", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.guestbook-submit:hover {
+    background: white;
+    color: #0479AF;
+    border-color: #0479AF;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(4, 121, 175, 0.3);
+}
+
+.guestbook-submit:active {
+    transform: translateY(-1px);
 }
 
 .admin-button {
@@ -816,4 +946,275 @@ p {
     border: 1px solid #0479AF;
     font-size: 14px;
     font-family: 'Exo 2', sans-serif;
+}
+
+/* Add these styles to your existing style.css file */
+
+/* Back to List Button */
+.back-to-list-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid white;
+    border-radius: 10px;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 30px;
+}
+
+.back-to-list-btn:hover {
+    background: rgba(4, 121, 175, 0.4);
+    transform: translateX(-5px);
+}
+
+/* Project Detail Container */
+.project-detail-container {
+    margin-bottom: 100px;
+}
+
+.project-detail-header {
+    margin-bottom: 40px;
+}
+
+.project-detail-header h1 {
+    font-size: 80px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.project-detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Project Detail Image */
+.project-detail-image {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.project-detail-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    border: 3px solid white;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Project Detail Info */
+.project-detail-info {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid white;
+    border-radius: 15px;
+    padding: 40px;
+}
+
+.project-detail-section {
+    margin-bottom: 30px;
+}
+
+.project-detail-section h3 {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.project-detail-section p {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+}
+
+/* Project Detail Stats */
+.project-detail-stats {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.detail-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.detail-stat-item .like-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    transition: all 0.3s;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.detail-stat-item .like-btn:hover,
+.detail-stat-item .like-btn.liked {
+    color: #ff6b6b;
+    transform: scale(1.2);
+}
+
+/* Project Action Buttons */
+.project-detail-actions {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.project-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    border: 2px solid white;
+}
+
+.github-btn {
+    background: #333;
+    color: white;
+}
+
+.github-btn:hover {
+    background: #24292e;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.download-btn {
+    background: #0479AF;
+    color: white;
+}
+
+.download-btn:hover {
+    background: #035a80;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(4, 121, 175, 0.3);
+}
+
+/* Make project cards clickable */
+.project-card {
+    cursor: pointer;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .project-detail-header h1 {
+        font-size: 50px;
+    }
+
+    .project-detail-info {
+        padding: 25px;
+    }
+
+    .project-detail-stats {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .project-detail-actions {
+        flex-direction: column;
+    }
+
+    .project-action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Add these styles to your existing style.css file */
+
+/* Category Header Row */
+.category-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Add Project Button */
+.btn-add-project {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-add-project:hover {
+    background: #45a049;
+    transform: scale(1.05);
+}
+
+/* Delete Project Button */
+.btn-delete-project {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-delete-project:hover {
+    background: #ff5252;
+    transform: scale(1.1);
+}
+
+/* Make Actions column narrower */
+.admin-table th:last-child,
+.admin-table td:last-child {
+    width: 60px;
+    text-align: center;
+}
+
+/* Add some spacing for empty fields */
+.table-input:invalid {
+    border-color: #ff6b6b;
+}
+
+.table-input:focus:invalid {
+    outline: 2px solid #ff6b6b;
 }

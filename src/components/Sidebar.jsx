@@ -11,6 +11,7 @@ export default function Sidebar({ currentPage, scrollToPage, pages, onAdminClick
             </button>
 
             <img src="/images/pp.jpg" alt="Profile" className="profile-img" />
+
             <nav>
                 {pages.map((page, index) => (
                     <div
@@ -26,6 +27,9 @@ export default function Sidebar({ currentPage, scrollToPage, pages, onAdminClick
                     </div>
                 ))}
             </nav>
+            <p className="visitorCount">
+                Total Visitors: 
+            </p>
         </div>
     );
 }
