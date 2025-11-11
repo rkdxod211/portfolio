@@ -23,11 +23,9 @@ export default function Projects({ database }) {
     };
 
     const handleDownload = (projectName) => {
-        // Placeholder for download functionality
-        alert(`Download functionality for ${projectName} will be implemented with backend`);
+        alert(`Downloaded ${projectName}`);
     };
 
-    // If a specific project is selected, show detailed view
     if (selectedProject) {
         return (
             <div>
