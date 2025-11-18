@@ -12,7 +12,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/api/test', (req, res) => {
     res.json({ 
-        message: 'Backend server is running!',
         timestamp: new Date()
     });
 });
