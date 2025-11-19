@@ -9,9 +9,138 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
         setEditMode({ ...editMode, [section]: true });
     };
 
-    const handleSave = (section) => {
-        onUpdateDatabase(editedData);
-        setEditMode({ ...editMode, [section]: false });
+    const handleSave = async (section) => {
+        try {
+            console.log(`💾 ${section} 저장 중...`);
+            
+            if (section === 'about') {
+                const response = await fetch('/api/content/about', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(editedData.about)
+                });
+                
+                if (response.ok) {
+                    console.log('✅ About 저장 성공!');
+                    onUpdateDatabase(editedData);
+                    setEditMode({ ...editMode, [section]: false });
+                    alert('SAVED');
+                } else {
+                    alert('ERROR');
+                }
+            } 
+            else if (section === 'experience') {
+                // Languages 업데이트
+                await fetch('/api/content/experience/languages', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ languages: editedData.experience.languages })
+                });
+                
+                // Clubs 업데이트
+                for (const club of editedData.experience.clubs) {
+                    if (club.id) {
+                        await fetch(`/api/content/experience/clubs/${club.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(club)
+                        });
+                    }
+                }
+                
+                // Work 업데이트
+                for (const work of editedData.experience.work) {
+                    if (work.id) {
+                        await fetch(`/api/content/experience/work/${work.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(work)
+                        });
+                    }
+                }
+                
+                console.log('✅ Experience 저장 성공!');
+                onUpdateDatabase(editedData);
+                setEditMode({ ...editMode, [section]: false });
+                alert('SAVED');
+            } 
+            else if (section === 'contact') {
+                const response = await fetch('/api/content/contact', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(editedData.contact)
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Contact 저장 성공!');
+                    onUpdateDatabase(editedData);
+                    setEditMode({ ...editMode, [section]: false });
+                    alert('SAVED!');
+                } else {
+                    alert('ERROR');
+                }
+            }
+            else if (section === 'projects') {
+                // 각 카테고리의 프로젝트들을 처리
+                for (const category in editedData.projects) {
+                    for (const project of editedData.projects[category]) {
+                        if (project.id && project.id > 0) {
+                            // 기존 프로젝트 수정
+                            await fetch(`/api/projects/${project.id}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    ...project,
+                                    category
+                                })
+                            });
+                        } else {
+                            // 새 프로젝트 추가
+                            const response = await fetch('/api/projects', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    ...project,
+                                    category
+                                })
+                            });
+                            
+                            if (response.ok) {
+                                const newProject = await response.json();
+                                // ID를 업데이트
+                                project.id = newProject.id;
+                            }
+                        }
+                    }
+                }
+                const projectsResponse = await fetch('/api/projects');
+                const freshProjects = await projectsResponse.json();
+                
+                const updatedData = {
+                    ...editedData,
+                    projects: freshProjects
+                };
+                setEditedData(updatedData);
+                
+                console.log('✅ Projects 저장 성공!');
+                onUpdateDatabase(editedData);
+                setEditMode({ ...editMode, [section]: false });
+                alert('SAVED');
+            } 
+            else {
+                // 다른 섹션
+                onUpdateDatabase(editedData);
+                setEditMode({ ...editMode, [section]: false });
+            }
+            
+        } catch (error) {
+            console.error('❌ 저장 실패:', error);
+            alert('ERROR: ' + error.message);
+        }
     };
 
     const handleCancel = (section) => {
@@ -66,19 +195,39 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
         });
     };
 
-    const handleDeleteProject = (category, index, projectName) => {
-        // Confirmation dialog
+    const handleDeleteProject = async (category, index, projectName, projectId) => {
         const confirmDelete = window.confirm(
             `Are you sure you want to delete "${projectName}"?\n\nThis action cannot be undone.`
         );
 
         if (confirmDelete) {
-            const newProjects = { ...editedData.projects };
-            newProjects[category].splice(index, 1);
-            setEditedData({
-                ...editedData,
-                projects: newProjects
-            });
+            try {
+                // 백엔드에서 삭제
+                if (projectId && projectId > 0) {
+                    const response = await fetch(`/api/projects/${projectId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('삭제에 실패했습니다');
+                    }
+                    
+                    console.log(`✅ 프로젝트 삭제 성공: ${projectName}`);
+                }
+                
+                // 프론트엔드 상태에서도 제거
+                const newProjects = { ...editedData.projects };
+                newProjects[category].splice(index, 1);
+                setEditedData({
+                    ...editedData,
+                    projects: newProjects
+                });
+                
+                alert('삭제되었습니다!');
+            } catch (error) {
+                console.error('❌ 삭제 실패:', error);
+                alert('삭제에 실패했습니다: ' + error.message);
+            }
         }
     };
 
@@ -426,8 +575,9 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                         </div>
                     )}
                 </div>
-
-                {Object.keys(editedData.projects).map((category) => (
+                {['Web', 'App', 'Game', 'ETC']
+                    .filter(category => editedData.projects[category]) // 존재하는 카테고리만
+                    .map((category) => (
                     <div key={category} className="form-group">
                         <div className="category-header-row">
                             <h3 className="subsection-title">{category}</h3>
@@ -590,7 +740,7 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                                             {editMode.projects && (
                                                 <td>
                                                     <button
-                                                        onClick={() => handleDeleteProject(category, index, project.name)}
+                                                        onClick={() => handleDeleteProject(category, index, project.name, project.id)}
                                                         className="btn-delete-project"
                                                         title="Delete Project"
                                                     >

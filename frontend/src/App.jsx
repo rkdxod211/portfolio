@@ -101,8 +101,52 @@ export default function App() {
     const [viewMode, setViewMode] = useState('portfolio'); 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [database, setDatabase] = useState(initialDatabase);
+    const [loading, setLoading] = useState(true);
     const scrollContainerRef = useRef(null);
     const pages = ['home', 'about', 'projects', 'experience', 'contact'];
+
+    // 백엔드에서 데이터 가져오기
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                console.log('🔄 백엔드에서 데이터를 가져오는 중...');
+                
+                // About, Experience, Contact 데이터 가져오기
+                const [aboutRes, experienceRes, contactRes, projectsRes] = await Promise.all([
+                    fetch('/api/content/about'),
+                    fetch('/api/content/experience'),
+                    fetch('/api/content/contact'),
+                    fetch('/api/projects')
+                ]);
+
+                const about = await aboutRes.json();
+                const experience = await experienceRes.json();
+                const contact = await contactRes.json();
+                const projects = await projectsRes.json();
+
+                console.log('✅ About:', about);
+                console.log('✅ Experience:', experience);
+                console.log('✅ Contact:', contact);
+                console.log('✅ Projects:', projects);
+
+                // 기존 database에 백엔드 데이터 합치기
+                setDatabase(prevDatabase => ({
+                    ...prevDatabase,
+                    about,
+                    experience,
+                    contact,
+                    projects
+                }));
+
+                setLoading(false);
+            } catch (error) {
+                console.error('❌ 데이터 가져오기 실패:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     useEffect(() => {
         const container = scrollContainerRef.current;
@@ -170,7 +214,32 @@ export default function App() {
         setCurrentPage(0);
     };
 
-    const handleBackToSite = () => {
+    const handleBackToSite = async () => {
+        // Admin에서 변경한 내용을 반영하기 위해 데이터 다시 가져오기
+        try {
+            const [aboutRes, experienceRes, contactRes, projectsRes] = await Promise.all([
+                fetch('/api/content/about'),
+                fetch('/api/content/experience'),
+                fetch('/api/content/contact'),
+                fetch('/api/projects')
+            ]);
+
+            const about = await aboutRes.json();
+            const experience = await experienceRes.json();
+            const contact = await contactRes.json();
+            const projects = await projectsRes.json();
+
+            setDatabase(prevDatabase => ({
+                ...prevDatabase,
+                about,
+                experience,
+                contact,
+                projects
+            }));
+        } catch (error) {
+            console.error('❌ 데이터 새로고침 실패:', error);
+        }
+        
         setViewMode('portfolio');
     };
 
@@ -178,6 +247,22 @@ export default function App() {
         setDatabase(newData);
     };
 
+    // 로딩 중일 때
+    if (loading) {
+        return (
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+                fontSize: '32px',
+                color: 'white',
+                fontFamily: 'Exo 2'
+            }}>
+                Loading...
+            </div>
+        );
+    }
     // Login view
     if (viewMode === 'login') {
         return <Login onLogin={handleLogin} adminCredentials={database.admin} onClose={handleBackToSite} />;
