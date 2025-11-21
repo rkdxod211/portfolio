@@ -88,35 +88,45 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 // 각 카테고리의 프로젝트들을 처리
                 for (const category in editedData.projects) {
                     for (const project of editedData.projects[category]) {
+                        // id가 있고 0보다 크면 기존 프로젝트
                         if (project.id && project.id > 0) {
                             // 기존 프로젝트 수정
                             await fetch(`/api/projects/${project.id}`, {
                                 method: 'PUT',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                    ...project,
-                                    category
+                                    name: project.name,
+                                    description: project.description,
+                                    category: category,
+                                    thumbnail: project.thumbnail,
+                                    githubLink: project.githubLink,
+                                    likes: project.likes,
+                                    views: project.views,
+                                    downloads: project.downloads
                                 })
                             });
                         } else {
-                            // 새 프로젝트 추가
+                            // 새 프로젝트 추가 (id가 0이거나 없는 경우)
                             const response = await fetch('/api/projects', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                    ...project,
-                                    category
+                                    name: project.name,
+                                    description: project.description,
+                                    category: category,
+                                    thumbnail: project.thumbnail,
+                                    githubLink: project.githubLink
                                 })
                             });
                             
                             if (response.ok) {
                                 const newProject = await response.json();
-                                // ID를 업데이트
-                                project.id = newProject.id;
+                                console.log(`✅ 새 프로젝트 추가됨: ID ${newProject.id}`);
                             }
                         }
                     }
                 }
+                
                 const projectsResponse = await fetch('/api/projects');
                 const freshProjects = await projectsResponse.json();
                 
@@ -127,12 +137,11 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 setEditedData(updatedData);
                 
                 console.log('✅ Projects 저장 성공!');
-                onUpdateDatabase(editedData);
+                onUpdateDatabase(updatedData);
                 setEditMode({ ...editMode, [section]: false });
                 alert('SAVED');
-            } 
+            }
             else {
-                // 다른 섹션
                 onUpdateDatabase(editedData);
                 setEditMode({ ...editMode, [section]: false });
             }
@@ -144,10 +153,12 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
     };
 
     const handleCancel = (section) => {
-        setEditedData(database);
+        setEditedData({
+            ...editedData,
+            [section]: JSON.parse(JSON.stringify(database[section]))
+        });
         setEditMode({ ...editMode, [section]: false });
     };
-
     const handleUpdateClub = (index, field, value) => {
         const newClubs = [...editedData.experience.clubs];
         newClubs[index][field] = value;
@@ -169,16 +180,8 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
     const handleAddProject = (category) => {
         const newProjects = { ...editedData.projects };
         
-        // Find the highest ID to create a unique new ID
-        let maxId = 0;
-        Object.values(editedData.projects).forEach(categoryProjects => {
-            categoryProjects.forEach(project => {
-                if (project.id > maxId) maxId = project.id;
-            });
-        });
-
         const newProject = {
-            id: maxId + 1,
+            id: 0,  
             name: '',
             description: '',
             thumbnail: '',
@@ -202,7 +205,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
 
         if (confirmDelete) {
             try {
-                // 백엔드에서 삭제
                 if (projectId && projectId > 0) {
                     const response = await fetch(`/api/projects/${projectId}`, {
                         method: 'DELETE'
@@ -215,7 +217,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                     console.log(`✅ 프로젝트 삭제 성공: ${projectName}`);
                 }
                 
-                // 프론트엔드 상태에서도 제거
                 const newProjects = { ...editedData.projects };
                 newProjects[category].splice(index, 1);
                 setEditedData({
@@ -233,7 +234,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
 
     const validateAndSave = (section) => {
         if (section === 'projects') {
-            // Validate all projects have required fields
             let isValid = true;
             let errorMessage = '';
 
