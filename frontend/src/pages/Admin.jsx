@@ -84,6 +84,36 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                     alert('ERROR');
                 }
             }
+            else if (section === 'education') {
+            // Education 항목들 업데이트
+            for (const edu of editedData.education) {
+                if (edu.id && edu.id > 0) {
+                    // 기존 항목 수정
+                    await fetch(`/api/content/education/${edu.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(edu)
+                    });
+                } else {
+                    // 새 항목 추가
+                    const response = await fetch('/api/content/education', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(edu)
+                    });
+                    
+                    if (response.ok) {
+                        const newEdu = await response.json();
+                        edu.id = newEdu.id;
+                    }
+                }
+            }
+            
+            console.log('✅ Education 저장 성공!');
+            onUpdateDatabase(editedData);
+            setEditMode({ ...editMode, [section]: false });
+            alert('SAVED');
+        }
             else if (section === 'projects') {
                 // 각 카테고리의 프로젝트들을 처리
                 for (const category in editedData.projects) {
@@ -328,6 +358,115 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                             {editedData.about.interests}
                         </div>
                     )}
+                </div>
+            </div>
+
+            {/* Education Section */}
+            <div className="admin-section">
+                <div className="section-header">
+                    <h2 className="section-title">Education Section</h2>
+                    {!editMode.education ? (
+                        <button onClick={() => handleEdit('education')} className="btn-edit">
+                            <Edit2 size={16} /> Edit
+                        </button>
+                    ) : (
+                        <div className="edit-actions">
+                            <button onClick={() => handleSave('education')} className="btn-save">
+                                <Save size={16} /> Save
+                            </button>
+                            <button onClick={() => handleCancel('education')} className="btn-cancel">
+                                <X size={16} /> Cancel
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                <div className="admin-table-container">
+                    <table className="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Institution</th>
+                                <th>Period</th>
+                                <th>Degree</th>
+                                <th>Order</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {editedData.education && editedData.education.map((edu, index) => (
+                                <tr key={edu.id || index}>
+                                    <td>
+                                        {editMode.education ? (
+                                            <input
+                                                type="text"
+                                                value={edu.institution}
+                                                onChange={(e) => {
+                                                    const newEducation = [...editedData.education];
+                                                    newEducation[index].institution = e.target.value;
+                                                    setEditedData({
+                                                        ...editedData,
+                                                        education: newEducation
+                                                    });
+                                                }}
+                                                className="table-input"
+                                            />
+                                        ) : edu.institution}
+                                    </td>
+                                    <td>
+                                        {editMode.education ? (
+                                            <input
+                                                type="text"
+                                                value={edu.period}
+                                                onChange={(e) => {
+                                                    const newEducation = [...editedData.education];
+                                                    newEducation[index].period = e.target.value;
+                                                    setEditedData({
+                                                        ...editedData,
+                                                        education: newEducation
+                                                    });
+                                                }}
+                                                className="table-input"
+                                            />
+                                        ) : edu.period}
+                                    </td>
+                                    <td>
+                                        {editMode.education ? (
+                                            <input
+                                                type="text"
+                                                value={edu.degree}
+                                                onChange={(e) => {
+                                                    const newEducation = [...editedData.education];
+                                                    newEducation[index].degree = e.target.value;
+                                                    setEditedData({
+                                                        ...editedData,
+                                                        education: newEducation
+                                                    });
+                                                }}
+                                                className="table-input"
+                                            />
+                                        ) : edu.degree}
+                                    </td>
+                                    <td>
+                                        {editMode.education ? (
+                                            <input
+                                                type="number"
+                                                value={edu.display_order}
+                                                onChange={(e) => {
+                                                    const newEducation = [...editedData.education];
+                                                    newEducation[index].display_order = parseInt(e.target.value) || 0;
+                                                    setEditedData({
+                                                        ...editedData,
+                                                        education: newEducation
+                                                    });
+                                                }}
+                                                className="table-input"
+                                                style={{ width: '80px' }}
+                                            />
+                                        ) : edu.display_order}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

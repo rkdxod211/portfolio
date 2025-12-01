@@ -38,6 +38,78 @@ router.put('/about', (req, res) => {
     });
 });
 
+// Education 가져오기
+router.get('/education', (req, res) => {
+    const query = 'SELECT * FROM education ORDER BY display_order';  // ← 이미 있음
+    
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        console.log(`✅ Education 데이터 전송`);
+        res.json(results);
+    });
+});
+
+// Education 수정
+router.put('/education/:id', (req, res) => {
+    const { id } = req.params;
+    const { institution, period, degree, display_order } = req.body;
+    
+    const query = `
+        UPDATE education 
+        SET institution = ?, period = ?, degree = ?, display_order = ?
+        WHERE id = ?
+    `;
+    
+    db.query(query, [institution, period, degree, display_order, id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        console.log(`✅ Education 수정 성공: ID ${id}`);
+        res.json({ message: 'Education updated successfully' });
+    });
+});
+
+// Education 추가
+router.post('/education', (req, res) => {
+    const { institution, period, degree, display_order } = req.body;
+    
+    const query = `
+        INSERT INTO education (institution, period, degree, display_order)
+        VALUES (?, ?, ?, ?)
+    `;
+    
+    db.query(query, [institution, period, degree, display_order || 0], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        console.log(`✅ Education 추가 성공`);
+        res.status(201).json({
+            id: result.insertId,
+            institution,
+            period,
+            degree,
+            display_order: display_order || 0
+        });
+    });
+});
+
+// Education 삭제
+router.delete('/education/:id', (req, res) => {
+    const { id } = req.params;
+    
+    const query = 'DELETE FROM education WHERE id = ?';
+    
+    db.query(query, [id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        console.log(`✅ Education 삭제 성공: ID ${id}`);
+        res.json({ message: 'Education deleted successfully' });
+    });
+});
+
 // ============ EXPERIENCE SECTION ============
 
 // Get all experience data

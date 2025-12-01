@@ -1,6 +1,10 @@
 import React from 'react';
 
 export default function About({ database }) {
+    const sortedEducation = database.education 
+        ? [...database.education].sort((a, b) => a.display_order - b.display_order)
+        : [];
+        
     return (
         <div>
             <h1>ABOUT ME</h1>
@@ -12,22 +16,16 @@ export default function About({ database }) {
             </div>
             <h2>EDUCATION</h2>
             <div className="experience-box">
-                <div className="experience-item">
-                    <div className="experience-title">
-                        University of Wisconsin-Madison (2025 - present)
+                {sortedEducation.map((edu) => (
+                    <div key={edu.id} className="experience-item">
+                        <div className="experience-title">
+                            {edu.institution} ({edu.period})
+                        </div>
+                        <div className="experience-detail">
+                            {edu.degree}
+                        </div>
                     </div>
-                    <div className="experience-detail">
-                        B.S. in Computer Science
-                    </div>
-                </div>
-                <div className="experience-item">
-                    <div className="experience-title">
-                        North London Collegiate School Jeju (2019-2025)
-                    </div>
-                    <div className="experience-detail">
-                        International Baccalaureate Diploma
-                    </div>
-                </div>
+                ))}
             </div>
             <h2>INTERESTS</h2>
             <div className="experience-box" style={{ minHeight: '200px' }}>
