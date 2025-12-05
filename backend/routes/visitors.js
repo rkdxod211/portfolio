@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 
-// 방문자 수 증가 및 조회
 router.post('/increment', (req, res) => {
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     
@@ -14,14 +13,12 @@ router.post('/increment', (req, res) => {
         }
         
         if (results.length > 0) {
-            // 오늘 날짜 데이터가 있으면 count 증가
             const updateQuery = 'UPDATE visitor_stats SET count = count + 1 WHERE date = ?';
             db.query(updateQuery, [today], (err) => {
                 if (err) {
                     return res.status(500).json({ error: err.message });
                 }
                 
-                // 증가된 count 조회
                 db.query(checkQuery, [today], (err, updated) => {
                     if (err) {
                         return res.status(500).json({ error: err.message });
@@ -30,7 +27,6 @@ router.post('/increment', (req, res) => {
                 });
             });
         } else {
-            // 오늘 날짜 데이터가 없으면 새로 생성
             const insertQuery = 'INSERT INTO visitor_stats (date, count) VALUES (?, 1)';
             db.query(insertQuery, [today], (err) => {
                 if (err) {
@@ -42,7 +38,6 @@ router.post('/increment', (req, res) => {
     });
 });
 
-// 전체 방문자 수 조회
 router.get('/total', (req, res) => {
     const query = 'SELECT SUM(count) as total FROM visitor_stats';
     

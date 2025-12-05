@@ -21,11 +21,9 @@ export default function Sidebar({ currentPage, scrollToPage, pages, onAdminClick
                 }
 
                 const data = await response.json();
-                console.log('✅ Visitor count from backend:', data.count);
                 setVisitorCount(data.count);
                 setLoading(false);
             } catch (error) {
-                console.error('❌ Backend Error:', error);
                 
                 // Fallback: localStorage
                 let count = parseInt(localStorage.getItem('portfolioVisitors')) || 0;
@@ -40,7 +38,6 @@ export default function Sidebar({ currentPage, scrollToPage, pages, onAdminClick
                 
                 setVisitorCount(count);
                 setLoading(false);
-                console.log('Using fallback counter:', count);
             }
         };
 
@@ -58,7 +55,6 @@ export default function Sidebar({ currentPage, scrollToPage, pages, onAdminClick
                     setLoading(false);
                 })
                 .catch(err => {
-                    console.error(err);
                     setVisitorCount(0);
                     setLoading(false);
                 });

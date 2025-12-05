@@ -46,13 +46,10 @@ export default function App() {
     const scrollContainerRef = useRef(null);
     const pages = ['home', 'about', 'projects', 'experience', 'contact'];
 
-    // 백엔드에서 데이터 가져오기
     useEffect(() => {
         const fetchData = async () => {
             try {
-                console.log('🔄 백엔드에서 데이터를 가져오는 중...');
                 
-                // About, Experience, Contact 데이터 가져오기
                 const [aboutRes, experienceRes, contactRes, projectsRes, educationRes] = await Promise.all([
                     fetch('/api/content/about'),
                     fetch('/api/content/experience'),
@@ -67,13 +64,6 @@ export default function App() {
                 const projects = await projectsRes.json();
                 const education = await educationRes.json();
 
-                console.log('✅ About:', about);
-                console.log('✅ Experience:', experience);
-                console.log('✅ Contact:', contact);
-                console.log('✅ Projects:', projects);
-                console.log('✅ Education:', education); 
-
-                // 기존 database에 백엔드 데이터 합치기
                 setDatabase(prevDatabase => ({
                     ...prevDatabase,
                     about,
@@ -85,7 +75,6 @@ export default function App() {
 
                 setLoading(false);
             } catch (error) {
-                console.error('❌ 데이터 가져오기 실패:', error);
                 setLoading(false);
             }
         };
@@ -160,7 +149,6 @@ export default function App() {
     };
 
     const handleBackToSite = async () => {
-        // Admin에서 변경한 내용을 반영하기 위해 데이터 다시 가져오기
         try {
             const [aboutRes, experienceRes, contactRes, projectsRes] = await Promise.all([
                 fetch('/api/content/about'),
@@ -182,7 +170,6 @@ export default function App() {
                 projects
             }));
         } catch (error) {
-            console.error('❌ 데이터 새로고침 실패:', error);
         }
         
         setViewMode('portfolio');
@@ -192,7 +179,6 @@ export default function App() {
         setDatabase(newData);
     };
 
-    // 로딩 중일 때
     if (loading) {
         return (
             <div style={{
@@ -208,12 +194,10 @@ export default function App() {
             </div>
         );
     }
-    // Login view
     if (viewMode === 'login') {
-        return <Login onLogin={handleLogin} adminCredentials={database.admin} onClose={handleBackToSite} />;
+        return <Login onLogin={handleLogin} onClose={handleBackToSite} />;
     }
 
-    // Admin view
     if (viewMode === 'admin') {
         return (
             <Admin 
@@ -225,7 +209,6 @@ export default function App() {
         );
     }
 
-    // Portfolio view
     return (
         <div className="app-container">
             <Sidebar 

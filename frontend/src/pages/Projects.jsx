@@ -15,7 +15,6 @@ export default function Projects({ database }) {
         
         const isCurrentlyLiked = likedProjects[projectId];
         
-        // 이미 좋아요를 눌렀으면 취소만 (백엔드는 호출 안 함)
         if (isCurrentlyLiked) {
             setLikedProjects(prev => ({
                 ...prev,
@@ -24,13 +23,11 @@ export default function Projects({ database }) {
             return;
         }
         
-        // 좋아요 추가
         setLikedProjects(prev => ({
             ...prev,
             [projectId]: true
         }));
         
-        // 백엔드에 좋아요 증가 요청
         try {
             const response = await fetch(`/api/projects/${projectId}/like`, {
                 method: 'POST'
@@ -38,23 +35,19 @@ export default function Projects({ database }) {
             
             if (response.ok) {
                 const data = await response.json();
-                console.log(`✅ 프로젝트 ${projectId} 좋아요: ${data.likes}`);
                 
-                // 로컬 상태 업데이트
                 setProjectStats(prev => ({
                     ...prev,
                     [projectId]: { ...prev[projectId], likes: data.likes }
                 }));
             }
         } catch (error) {
-            console.error('❌ 좋아요 증가 실패:', error);
         }
     };
 
     const handleProjectClick = async (project) => {
         setSelectedProject(project);
         
-        // 조회수 증가
         try {
             const response = await fetch(`/api/projects/${project.id}/view`, {
                 method: 'POST'
@@ -62,16 +55,13 @@ export default function Projects({ database }) {
             
             if (response.ok) {
                 const data = await response.json();
-                console.log(`✅ 프로젝트 ${project.name} 조회수: ${data.views}`);
                 
-                // 로컬 상태 업데이트
                 setProjectStats(prev => ({
                     ...prev,
                     [project.id]: { ...prev[project.id], views: data.views }
                 }));
             }
         } catch (error) {
-            console.error('❌ 조회수 증가 실패:', error);
         }
     };
 
@@ -87,26 +77,21 @@ export default function Projects({ database }) {
             
             if (response.ok) {
                 const data = await response.json();
-                console.log(`✅ 프로젝트 ${projectName} 다운로드: ${data.downloads}`);
                 
-                // 로컬 상태 업데이트
                 setProjectStats(prev => ({
                     ...prev,
                     [projectId]: { ...prev[projectId], downloads: data.downloads }
                 }));
             }
         } catch (error) {
-            console.error('❌ 다운로드 증가 실패:', error);
         }
         
         alert(`Downloaded ${projectName}`);
     };
 
-    // 프로젝트의 최신 통계 가져오기
     const getProjectStats = (project) => {
         const stats = projectStats[project.id] || {};
         return {
-            // 백엔드에서 업데이트된 값이 있으면 그걸 사용, 없으면 원본 사용
             likes: stats.likes !== undefined ? stats.likes : project.likes,
             views: stats.views !== undefined ? stats.views : project.views,
             downloads: stats.downloads !== undefined ? stats.downloads : project.downloads

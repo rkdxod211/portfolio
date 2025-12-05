@@ -11,7 +11,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
 
     const handleSave = async (section) => {
         try {
-            console.log(`💾 ${section} 저장 중...`);
             
             if (section === 'about') {
                 const response = await fetch('/api/content/about', {
@@ -23,7 +22,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 });
                 
                 if (response.ok) {
-                    console.log('✅ About 저장 성공!');
                     onUpdateDatabase(editedData);
                     setEditMode({ ...editMode, [section]: false });
                     alert('SAVED');
@@ -32,14 +30,12 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 }
             } 
             else if (section === 'experience') {
-                // Languages 업데이트
                 await fetch('/api/content/experience/languages', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ languages: editedData.experience.languages })
                 });
                 
-                // Clubs 업데이트
                 for (const club of editedData.experience.clubs) {
                     if (club.id) {
                         await fetch(`/api/content/experience/clubs/${club.id}`, {
@@ -50,7 +46,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                     }
                 }
                 
-                // Work 업데이트
                 for (const work of editedData.experience.work) {
                     if (work.id) {
                         await fetch(`/api/content/experience/work/${work.id}`, {
@@ -61,7 +56,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                     }
                 }
                 
-                console.log('✅ Experience 저장 성공!');
                 onUpdateDatabase(editedData);
                 setEditMode({ ...editMode, [section]: false });
                 alert('SAVED');
@@ -76,7 +70,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 });
                 
                 if (response.ok) {
-                    console.log('✅ Contact 저장 성공!');
                     onUpdateDatabase(editedData);
                     setEditMode({ ...editMode, [section]: false });
                     alert('SAVED!');
@@ -85,17 +78,14 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 }
             }
             else if (section === 'education') {
-            // Education 항목들 업데이트
             for (const edu of editedData.education) {
                 if (edu.id && edu.id > 0) {
-                    // 기존 항목 수정
                     await fetch(`/api/content/education/${edu.id}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(edu)
                     });
                 } else {
-                    // 새 항목 추가
                     const response = await fetch('/api/content/education', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -109,18 +99,14 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 }
             }
             
-            console.log('✅ Education 저장 성공!');
             onUpdateDatabase(editedData);
             setEditMode({ ...editMode, [section]: false });
             alert('SAVED');
         }
             else if (section === 'projects') {
-                // 각 카테고리의 프로젝트들을 처리
                 for (const category in editedData.projects) {
                     for (const project of editedData.projects[category]) {
-                        // id가 있고 0보다 크면 기존 프로젝트
                         if (project.id && project.id > 0) {
-                            // 기존 프로젝트 수정
                             await fetch(`/api/projects/${project.id}`, {
                                 method: 'PUT',
                                 headers: { 'Content-Type': 'application/json' },
@@ -136,7 +122,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                                 })
                             });
                         } else {
-                            // 새 프로젝트 추가 (id가 0이거나 없는 경우)
                             const response = await fetch('/api/projects', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -151,7 +136,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                             
                             if (response.ok) {
                                 const newProject = await response.json();
-                                console.log(`✅ 새 프로젝트 추가됨: ID ${newProject.id}`);
                             }
                         }
                     }
@@ -166,7 +150,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 };
                 setEditedData(updatedData);
                 
-                console.log('✅ Projects 저장 성공!');
                 onUpdateDatabase(updatedData);
                 setEditMode({ ...editMode, [section]: false });
                 alert('SAVED');
@@ -177,7 +160,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
             }
             
         } catch (error) {
-            console.error('❌ 저장 실패:', error);
             alert('ERROR: ' + error.message);
         }
     };
@@ -244,7 +226,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                         throw new Error('삭제에 실패했습니다');
                     }
                     
-                    console.log(`✅ 프로젝트 삭제 성공: ${projectName}`);
                 }
                 
                 const newProjects = { ...editedData.projects };
@@ -256,7 +237,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 
                 alert('삭제되었습니다!');
             } catch (error) {
-                console.error('❌ 삭제 실패:', error);
                 alert('삭제에 실패했습니다: ' + error.message);
             }
         }
@@ -715,7 +695,7 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                     )}
                 </div>
                 {['Web', 'App', 'Game', 'ETC']
-                    .filter(category => editedData.projects[category]) // 존재하는 카테고리만
+                    .filter(category => editedData.projects[category]) 
                     .map((category) => (
                     <div key={category} className="form-group">
                         <div className="category-header-row">

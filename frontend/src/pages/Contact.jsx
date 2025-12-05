@@ -9,7 +9,6 @@ export default function Contact({ database }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        // 유효성 검사
         if (nickname.length < 2 || nickname.length > 20) {
             alert('닉네임은 2-20자여야 합니다');
             return;
@@ -22,7 +21,6 @@ export default function Contact({ database }) {
         
         try {
             setSubmitting(true);
-            console.log('✍️ 방문록 작성 중...', { nickname, message });
             
             const response = await fetch('/api/guestbook', {
                 method: 'POST',
@@ -33,7 +31,6 @@ export default function Contact({ database }) {
             });
 
             if (response.ok) {
-                console.log('✅ 방문록 작성 성공!');
                 alert('Thank you for your message!');
                 setNickname('');
                 setMessage('');
@@ -42,7 +39,6 @@ export default function Contact({ database }) {
                 alert(error.error || '작성에 실패했습니다');
             }
         } catch (error) {
-            console.error('❌ 방문록 작성 실패:', error);
             alert('작성에 실패했습니다. 다시 시도해주세요.');
         } finally {
             setSubmitting(false);

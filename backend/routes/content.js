@@ -2,15 +2,11 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 
-// ============ ABOUT SECTION ============
-
-// Get about content
 router.get('/about', (req, res) => {
     const query = 'SELECT introduction, interests FROM about LIMIT 1';
     
     db.query(query, (err, results) => {
         if (err) {
-            console.error('About 에러:', err);
             return res.status(500).json({ error: err.message });
         }
         
@@ -18,12 +14,10 @@ router.get('/about', (req, res) => {
             return res.status(404).json({ error: 'About content not found' });
         }
         
-        console.log('✅ About 데이터 전송:', results[0]);
         res.json(results[0]);
     });
 });
 
-// Update about content (admin only)
 router.put('/about', (req, res) => {
     const { introduction, interests } = req.body;
     
@@ -38,7 +32,6 @@ router.put('/about', (req, res) => {
     });
 });
 
-// Education 가져오기
 router.get('/education', (req, res) => {
     const query = 'SELECT * FROM education ORDER BY display_order';  // ← 이미 있음
     
@@ -46,12 +39,10 @@ router.get('/education', (req, res) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        console.log(`✅ Education 데이터 전송`);
         res.json(results);
     });
 });
 
-// Education 수정
 router.put('/education/:id', (req, res) => {
     const { id } = req.params;
     const { institution, period, degree, display_order } = req.body;
@@ -66,12 +57,10 @@ router.put('/education/:id', (req, res) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        console.log(`✅ Education 수정 성공: ID ${id}`);
         res.json({ message: 'Education updated successfully' });
     });
 });
 
-// Education 추가
 router.post('/education', (req, res) => {
     const { institution, period, degree, display_order } = req.body;
     
@@ -84,7 +73,6 @@ router.post('/education', (req, res) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        console.log(`✅ Education 추가 성공`);
         res.status(201).json({
             id: result.insertId,
             institution,
@@ -95,7 +83,6 @@ router.post('/education', (req, res) => {
     });
 });
 
-// Education 삭제
 router.delete('/education/:id', (req, res) => {
     const { id } = req.params;
     
@@ -105,14 +92,10 @@ router.delete('/education/:id', (req, res) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        console.log(`✅ Education 삭제 성공: ID ${id}`);
         res.json({ message: 'Education deleted successfully' });
     });
 });
 
-// ============ EXPERIENCE SECTION ============
-
-// Get all experience data
 router.get('/experience', (req, res) => {
     const queries = {
         languages: 'SELECT languages FROM experience_languages LIMIT 1',
@@ -122,19 +105,16 @@ router.get('/experience', (req, res) => {
     
     db.query(queries.languages, (err1, langResults) => {
         if (err1) {
-            console.error('Languages 에러:', err1);
             return res.status(500).json({ error: err1.message });
         }
         
         db.query(queries.clubs, (err2, clubResults) => {
             if (err2) {
-                console.error('Clubs 에러:', err2);
                 return res.status(500).json({ error: err2.message });
             }
             
             db.query(queries.work, (err3, workResults) => {
                 if (err3) {
-                    console.error('Work 에러:', err3);
                     return res.status(500).json({ error: err3.message });
                 }
                 
@@ -144,14 +124,12 @@ router.get('/experience', (req, res) => {
                     work: workResults
                 };
                 
-                console.log('✅ Experience 데이터 전송:', result);
                 res.json(result);
             });
         });
     });
 });
 
-// Update languages (admin only)
 router.put('/experience/languages', (req, res) => {
     const { languages } = req.body;
     
@@ -166,7 +144,6 @@ router.put('/experience/languages', (req, res) => {
     });
 });
 
-// Update club/activity (admin only)
 router.put('/experience/clubs/:id', (req, res) => {
     const { id } = req.params;
     const { title, detail } = req.body;
@@ -186,7 +163,6 @@ router.put('/experience/clubs/:id', (req, res) => {
     });
 });
 
-// Update work experience (admin only)
 router.put('/experience/work/:id', (req, res) => {
     const { id } = req.params;
     const { title, detail } = req.body;
@@ -206,15 +182,11 @@ router.put('/experience/work/:id', (req, res) => {
     });
 });
 
-// ============ CONTACT SECTION ============
-
-// Get contact info
 router.get('/contact', (req, res) => {
     const query = 'SELECT email1, email2, github, linkedin FROM contact LIMIT 1';
     
     db.query(query, (err, results) => {
         if (err) {
-            console.error('Contact 에러:', err);
             return res.status(500).json({ error: err.message });
         }
         
@@ -229,12 +201,10 @@ router.get('/contact', (req, res) => {
             linkedin: contact.linkedin
         };
         
-        console.log('✅ Contact 데이터 전송:', result);
         res.json(result);
     });
 });
 
-// Update contact info (admin only)
 router.put('/contact', (req, res) => {
     const { emails, github, linkedin } = req.body;
     
