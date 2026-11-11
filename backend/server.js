@@ -9,11 +9,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const visitorsRouter = require('./routes/visitors');
 const contentRouter = require('./routes/content');
 const projectsRouter = require('./routes/projects');
 const authRouter = require('./routes/auth');
-app.use('/api/visitors', visitorsRouter);
 app.use('/api/content', contentRouter);
 app.use('/api/projects', projectsRouter);
 app.use('/api/auth', authRouter);
@@ -23,8 +21,7 @@ app.get('/', (req, res) => {
         message: 'Portfolio Backend API',
         version: '1.0.0',
         endpoints: {
-            test: '/api/test',
-            visitors: '/api/visitors/total'
+            test: '/api/test'
         }
     });
 });

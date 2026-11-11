@@ -20,11 +20,7 @@ const initialDatabase = {
         clubs: [],
         work: []
     },
-    contact: {
-        emails: ['', ''],
-        github: '',
-        linkedin: ''
-    },
+    contact: [],
     projects: [],
     education: []
 };

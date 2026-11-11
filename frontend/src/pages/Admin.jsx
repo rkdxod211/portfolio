@@ -32,52 +32,35 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 }
             } 
             else if (section === 'experience') {
-                await adminFetch('/api/content/experience/languages', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ languages: editedData.experience.languages })
-                });
-                
-                for (const club of editedData.experience.clubs) {
-                    if (club.id) {
-                        await adminFetch(`/api/content/experience/clubs/${club.id}`, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(club)
-                        });
-                    }
+                const [langRes, clubsRes, workRes] = await Promise.all([
+                    putJson('/api/content/experience/languages', { languages: editedData.experience.languages }),
+                    putJson('/api/content/experience/clubs', { items: editedData.experience.clubs }),
+                    putJson('/api/content/experience/work', { items: editedData.experience.work })
+                ]);
+                if (!langRes.ok || !clubsRes.ok || !workRes.ok) {
+                    alert('ERROR');
+                    return;
                 }
-                
-                for (const work of editedData.experience.work) {
-                    if (work.id) {
-                        await adminFetch(`/api/content/experience/work/${work.id}`, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(work)
-                        });
-                    }
-                }
-                
-                onUpdateDatabase(editedData);
+                const updated = {
+                    ...editedData,
+                    experience: { ...editedData.experience, clubs: await clubsRes.json(), work: await workRes.json() }
+                };
+                setEditedData(updated);
+                onUpdateDatabase(updated);
                 setEditMode({ ...editMode, [section]: false });
                 alert('SAVED');
-            } 
+            }
             else if (section === 'contact') {
-                const response = await adminFetch('/api/content/contact', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(editedData.contact)
-                });
-                
-                if (response.ok) {
-                    onUpdateDatabase(editedData);
-                    setEditMode({ ...editMode, [section]: false });
-                    alert('SAVED!');
-                } else {
+                const response = await putJson('/api/content/contact', { items: editedData.contact });
+                if (!response.ok) {
                     alert('ERROR');
+                    return;
                 }
+                const updated = { ...editedData, contact: await response.json() };
+                setEditedData(updated);
+                onUpdateDatabase(updated);
+                setEditMode({ ...editMode, [section]: false });
+                alert('SAVED');
             }
             else if (section === 'education') {
             for (const edu of editedData.education) {
@@ -122,22 +105,35 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
         });
         setEditMode({ ...editMode, [section]: false });
     };
-    const handleUpdateClub = (index, field, value) => {
-        const newClubs = [...editedData.experience.clubs];
-        newClubs[index][field] = value;
-        setEditedData({
-            ...editedData,
-            experience: { ...editedData.experience, clubs: newClubs }
-        });
-    };
+    const putJson = (url, body) => adminFetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
 
-    const handleUpdateWork = (index, field, value) => {
-        const newWork = [...editedData.experience.work];
-        newWork[index][field] = value;
-        setEditedData({
-            ...editedData,
-            experience: { ...editedData.experience, work: newWork }
-        });
+    // Clubs / Work
+    const setExpList = (key, list) => setEditedData(prev => ({
+        ...prev,
+        experience: { ...prev.experience, [key]: list }
+    }));
+    const updateExpItem = (key, index, field, value) =>
+        setExpList(key, editedData.experience[key].map((item, i) => (i === index ? { ...item, [field]: value } : item)));
+    const addExpItem = (key) => setExpList(key, [...editedData.experience[key], { title: '', detail: '' }]);
+    const removeExpItem = (key, index) => setExpList(key, editedData.experience[key].filter((_, i) => i !== index));
+
+    // Contact
+    const contactItems = Array.isArray(editedData.contact) ? editedData.contact : [];
+    const setContact = (list) => setEditedData(prev => ({ ...prev, contact: list }));
+    const updateContact = (index, field, value) =>
+        setContact(contactItems.map((item, i) => (i === index ? { ...item, [field]: value } : item)));
+    const addContact = () => setContact([...contactItems, { type: 'link', label: '', value: '' }]);
+    const removeContact = (index) => setContact(contactItems.filter((_, i) => i !== index));
+    const moveContact = (index, dir) => {
+        const target = index + dir;
+        if (target < 0 || target >= contactItems.length) return;
+        const list = [...contactItems];
+        [list[index], list[target]] = [list[target], list[index]];
+        setContact(list);
     };
 
     return (
@@ -360,85 +356,23 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                     )}
                 </div>
 
-                <div className="form-group">
-                    <h3 className="subsection-title">Clubs/Activities</h3>
-                    <div className="admin-table-container">
-                        <table className="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Detail</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {editedData.experience.clubs.map((club, index) => (
-                                    <tr key={index}>
-                                        <td>
-                                            {editMode.experience ? (
-                                                <input
-                                                    type="text"
-                                                    value={club.title}
-                                                    onChange={(e) => handleUpdateClub(index, 'title', e.target.value)}
-                                                    className="table-input"
-                                                />
-                                            ) : club.title}
-                                        </td>
-                                        <td>
-                                            {editMode.experience ? (
-                                                <input
-                                                    type="text"
-                                                    value={club.detail}
-                                                    onChange={(e) => handleUpdateClub(index, 'detail', e.target.value)}
-                                                    className="table-input"
-                                                />
-                                            ) : club.detail}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <EntryTable
+                    title="Clubs/Activities"
+                    items={editedData.experience.clubs}
+                    editing={editMode.experience}
+                    onChange={(index, field, value) => updateExpItem('clubs', index, field, value)}
+                    onAdd={() => addExpItem('clubs')}
+                    onRemove={(index) => removeExpItem('clubs', index)}
+                />
 
-                <div className="form-group">
-                    <h3 className="subsection-title">Work/Internship</h3>
-                    <div className="admin-table-container">
-                        <table className="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Detail</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {editedData.experience.work.map((work, index) => (
-                                    <tr key={index}>
-                                        <td>
-                                            {editMode.experience ? (
-                                                <input
-                                                    type="text"
-                                                    value={work.title}
-                                                    onChange={(e) => handleUpdateWork(index, 'title', e.target.value)}
-                                                    className="table-input"
-                                                />
-                                            ) : work.title}
-                                        </td>
-                                        <td>
-                                            {editMode.experience ? (
-                                                <input
-                                                    type="text"
-                                                    value={work.detail}
-                                                    onChange={(e) => handleUpdateWork(index, 'detail', e.target.value)}
-                                                    className="table-input"
-                                                />
-                                            ) : work.detail}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <EntryTable
+                    title="Work/Internship"
+                    items={editedData.experience.work}
+                    editing={editMode.experience}
+                    onChange={(index, field, value) => updateExpItem('work', index, field, value)}
+                    onAdd={() => addExpItem('work')}
+                    onRemove={(index) => removeExpItem('work', index)}
+                />
             </div>
 
             {/* Contact Section */}
@@ -462,91 +396,139 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 </div>
 
                 <div className="form-group">
-                    <label className="admin-label">Email 1</label>
-                    {editMode.contact ? (
-                        <input
-                            type="email"
-                            value={editedData.contact.emails[0]}
-                            onChange={(e) => {
-                                const newEmails = [...editedData.contact.emails];
-                                newEmails[0] = e.target.value;
-                                setEditedData({
-                                    ...editedData,
-                                    contact: { ...editedData.contact, emails: newEmails }
-                                });
-                            }}
-                            className="admin-input"
-                        />
-                    ) : (
-                        <div className="admin-display-box">
-                            {editedData.contact.emails[0]}
+                    {editMode.contact && (
+                        <div className="category-header-row">
+                            <span />
+                            <button onClick={addContact} className="btn-add-project">+ Add Contact</button>
                         </div>
                     )}
-                </div>
-
-                <div className="form-group">
-                    <label className="admin-label">Email 2</label>
-                    {editMode.contact ? (
-                        <input
-                            type="email"
-                            value={editedData.contact.emails[1]}
-                            onChange={(e) => {
-                                const newEmails = [...editedData.contact.emails];
-                                newEmails[1] = e.target.value;
-                                setEditedData({
-                                    ...editedData,
-                                    contact: { ...editedData.contact, emails: newEmails }
-                                });
-                            }}
-                            className="admin-input"
-                        />
-                    ) : (
-                        <div className="admin-display-box">
-                            {editedData.contact.emails[1]}
-                        </div>
-                    )}
-                </div>
-
-                <div className="form-group">
-                    <label className="admin-label">GitHub URL</label>
-                    {editMode.contact ? (
-                        <input
-                            type="url"
-                            value={editedData.contact.github}
-                            onChange={(e) => setEditedData({
-                                ...editedData,
-                                contact: { ...editedData.contact, github: e.target.value }
-                            })}
-                            className="admin-input"
-                        />
-                    ) : (
-                        <div className="admin-display-box">
-                            {editedData.contact.github}
-                        </div>
-                    )}
-                </div>
-
-                <div className="form-group">
-                    <label className="admin-label">LinkedIn URL</label>
-                    {editMode.contact ? (
-                        <input
-                            type="url"
-                            value={editedData.contact.linkedin}
-                            onChange={(e) => setEditedData({
-                                ...editedData,
-                                contact: { ...editedData.contact, linkedin: e.target.value }
-                            })}
-                            className="admin-input"
-                        />
-                    ) : (
-                        <div className="admin-display-box">
-                            {editedData.contact.linkedin}
-                        </div>
-                    )}
+                    <div className="admin-table-container">
+                        <table className="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Label</th>
+                                    <th>Email / URL</th>
+                                    {editMode.contact && <th>Actions</th>}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {contactItems.map((item, index) => (
+                                    <tr key={item.id || `new-${index}`}>
+                                        <td>
+                                            {editMode.contact ? (
+                                                <select
+                                                    value={item.type}
+                                                    onChange={(e) => updateContact(index, 'type', e.target.value)}
+                                                    className="table-input"
+                                                >
+                                                    <option value="email">Email</option>
+                                                    <option value="link">Link</option>
+                                                </select>
+                                            ) : (item.type === 'email' ? 'Email' : 'Link')}
+                                        </td>
+                                        <td>
+                                            {editMode.contact ? (
+                                                <input
+                                                    type="text"
+                                                    value={item.label}
+                                                    onChange={(e) => updateContact(index, 'label', e.target.value)}
+                                                    className="table-input"
+                                                    placeholder={item.type === 'email' ? 'Email' : 'e.g. GITHUB'}
+                                                />
+                                            ) : item.label}
+                                        </td>
+                                        <td>
+                                            {editMode.contact ? (
+                                                <input
+                                                    type={item.type === 'email' ? 'email' : 'url'}
+                                                    value={item.value}
+                                                    onChange={(e) => updateContact(index, 'value', e.target.value)}
+                                                    className="table-input"
+                                                    placeholder={item.type === 'email' ? 'you@example.com' : 'https://...'}
+                                                />
+                                            ) : item.value}
+                                        </td>
+                                        {editMode.contact && (
+                                            <td style={{ whiteSpace: 'nowrap' }}>
+                                                <button onClick={() => moveContact(index, -1)} className="btn-edit" title="Move up" disabled={index === 0}>↑</button>
+                                                <button onClick={() => moveContact(index, 1)} className="btn-edit" title="Move down" disabled={index === contactItems.length - 1} style={{ margin: '0 6px' }}>↓</button>
+                                                <button onClick={() => removeContact(index)} className="btn-delete-project" title="Delete">
+                                                    <X size={16} />
+                                                </button>
+                                            </td>
+                                        )}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style={{ fontSize: '14px', marginTop: '10px', color: '#1d3557' }}>
+                        Emails are listed under "EMAIL:" on the site; links become buttons showing their label.
+                    </p>
                 </div>
             </div>
 
             <ProjectVisibility />
+        </div>
+    );
+}
+
+function EntryTable({ title, items, editing, onChange, onAdd, onRemove }) {
+    return (
+        <div className="form-group">
+            <div className="category-header-row">
+                <h3 className="subsection-title">{title}</h3>
+                {editing && (
+                    <button onClick={onAdd} className="btn-add-project">+ Add</button>
+                )}
+            </div>
+            <div className="admin-table-container">
+                <table className="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Detail</th>
+                            {editing && <th>Actions</th>}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {items.map((item, index) => (
+                            <tr key={item.id || `new-${index}`}>
+                                <td>
+                                    {editing ? (
+                                        <input
+                                            type="text"
+                                            value={item.title}
+                                            onChange={(e) => onChange(index, 'title', e.target.value)}
+                                            className="table-input"
+                                            placeholder="Title"
+                                        />
+                                    ) : item.title}
+                                </td>
+                                <td>
+                                    {editing ? (
+                                        <input
+                                            type="text"
+                                            value={item.detail}
+                                            onChange={(e) => onChange(index, 'detail', e.target.value)}
+                                            className="table-input"
+                                            placeholder="Detail"
+                                        />
+                                    ) : item.detail}
+                                </td>
+                                {editing && (
+                                    <td>
+                                        <button onClick={() => onRemove(index)} className="btn-delete-project" title="Delete">
+                                            <X size={16} />
+                                        </button>
+                                    </td>
+                                )}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

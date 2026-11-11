@@ -72,32 +72,56 @@ router.put('/experience/languages', requireAdmin, handle(async (req, res) => {
     res.json({ message: 'Languages updated successfully' });
 }));
 
-const updateEntry = (table, label) => handle(async (req, res) => {
-    const { title, detail } = req.body;
-    const data = check(await supabase.from(table).update({ title, detail }).eq('id', req.params.id).select());
-    if (data.length === 0) return res.status(404).json({ error: `${label} not found` });
-    res.json({ message: `${label} updated successfully` });
+// Replace a whole list in one request: rows missing from `items` are deleted,
+// rows with an id are updated, rows without an id are inserted.
+async function syncList(table, items, pick) {
+    if (!Array.isArray(items)) throw Object.assign(new Error('items must be an array'), { status: 400 });
+
+    const existing = check(await supabase.from(table).select('id'));
+    const keep = new Set(items.filter(i => i.id).map(i => Number(i.id)));
+    const toDelete = existing.map(r => r.id).filter(id => !keep.has(id));
+    if (toDelete.length) check(await supabase.from(table).delete().in('id', toDelete));
+
+    const rows = items.map((item, index) => ({ ...(item.id ? { id: Number(item.id) } : {}), ...pick(item, index) }));
+    const updates = rows.filter(r => r.id);
+    const inserts = rows.filter(r => !r.id);
+    if (updates.length) check(await supabase.from(table).upsert(updates));
+    if (inserts.length) check(await supabase.from(table).insert(inserts));
+}
+
+const syncRoute = (table, pick, isEmpty, select, order) => handle(async (req, res) => {
+    const items = (req.body.items || []).filter(i => !isEmpty(i));
+    try {
+        await syncList(table, items, pick);
+    } catch (err) {
+        return res.status(err.status || 500).json({ error: err.message });
+    }
+    res.json(check(await supabase.from(table).select(select).order(order)));
 });
 
-router.put('/experience/clubs/:id', requireAdmin, updateEntry('experience_clubs', 'Club/activity'));
-router.put('/experience/work/:id', requireAdmin, updateEntry('experience_work', 'Work experience'));
+const pickEntry = (i) => ({ title: (i.title || '').trim(), detail: (i.detail || '').trim() });
+const emptyEntry = (i) => !(i.title || '').trim() && !(i.detail || '').trim();
+
+router.put('/experience/clubs', requireAdmin, syncRoute('experience_clubs', pickEntry, emptyEntry, 'id, title, detail', 'id'));
+router.put('/experience/work', requireAdmin, syncRoute('experience_work', pickEntry, emptyEntry, 'id, title, detail', 'id'));
+
+const CONTACT_FIELDS = 'id, type, label, value, display_order';
 
 router.get('/contact', handle(async (req, res) => {
-    const data = check(await supabase.from('contact').select('email1, email2, github, linkedin').eq('id', 1).maybeSingle());
-    if (!data) return res.status(404).json({ error: 'Contact info not found' });
-    res.json({
-        emails: [data.email1, data.email2],
-        github: data.github,
-        linkedin: data.linkedin
-    });
+    res.json(check(await supabase.from('contact_items').select(CONTACT_FIELDS).order('display_order')));
 }));
 
-router.put('/contact', requireAdmin, handle(async (req, res) => {
-    const { emails = [], github, linkedin } = req.body;
-    check(await supabase.from('contact').upsert({
-        id: 1, email1: emails[0] || '', email2: emails[1] || '', github, linkedin
-    }));
-    res.json({ message: 'Contact info updated successfully' });
-}));
+router.put('/contact', requireAdmin, syncRoute(
+    'contact_items',
+    (i, index) => ({
+        type: i.type === 'email' ? 'email' : 'link',
+        label: (i.label || '').trim(),
+        value: (i.value || '').trim(),
+        display_order: index
+    }),
+    (i) => !(i.value || '').trim(),
+    CONTACT_FIELDS,
+    'display_order'
+));
 
 module.exports = router;
