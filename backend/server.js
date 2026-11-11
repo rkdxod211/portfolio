@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const db = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,12 +11,10 @@ app.use(express.urlencoded({ extended: true }));
 
 const visitorsRouter = require('./routes/visitors');
 const contentRouter = require('./routes/content');
-const guestbookRouter = require('./routes/guestbook');
 const projectsRouter = require('./routes/projects');
 const authRouter = require('./routes/auth');
 app.use('/api/visitors', visitorsRouter);
 app.use('/api/content', contentRouter);
-app.use('/api/guestbook', guestbookRouter);
 app.use('/api/projects', projectsRouter);
 app.use('/api/auth', authRouter);
 
@@ -39,6 +36,11 @@ app.get('/api/test', (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+// Locally: `node server.js`. On Vercel the app is exported via api/index.js.
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running on http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;

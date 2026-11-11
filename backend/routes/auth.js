@@ -1,43 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/database');
-const bcrypt = require('bcrypt');
+const supabase = require('../config/database');
+const bcrypt = require('bcryptjs');
+const { issueToken } = require('../middleware/auth');
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    
+
     if (!username || !password) {
         return res.status(400).json({ error: 'Username and password required' });
     }
-    
-    const query = 'SELECT * FROM admin WHERE username = ?';
-    
-    db.query(query, [username], async (err, results) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
+
+    const { data: user, error } = await supabase
+        .from('admin')
+        .select('password')
+        .eq('username', username)
+        .maybeSingle();
+    if (error) return res.status(500).json({ error: error.message });
+    if (!user) return res.status(401).json({ error: 'Invalid username or password' });
+
+    try {
+        if (await bcrypt.compare(password, user.password)) {
+            res.json({ success: true, message: 'Login successful', token: issueToken(username) });
+        } else {
+            res.status(401).json({ error: 'Invalid username or password' });
         }
-        
-        if (results.length === 0) {
-            return res.status(401).json({ error: 'Invalid username or password' });
-        }
-        
-        const user = results[0];
-        
-        try {
-            const isMatch = await bcrypt.compare(password, user.password);
-            
-            if (isMatch) {
-                res.json({ 
-                    success: true,
-                    message: 'Login successful'
-                });
-            } else {
-                res.status(401).json({ error: 'Invalid username or password' });
-            }
-        } catch (compareError) {
-            res.status(500).json({ error: 'Login failed' });
-        }
-    });
+    } catch (compareError) {
+        res.status(500).json({ error: 'Login failed' });
+    }
 });
 
 module.exports = router;

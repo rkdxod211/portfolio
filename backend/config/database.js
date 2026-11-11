@@ -1,19 +1,17 @@
-const mysql = require('mysql2');
+const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
-const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-});
+if (!/^https:\/\//.test(process.env.SUPABASE_URL || '') ||
+    !process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_SERVICE_ROLE_KEY.startsWith('PASTE_')) {
+    throw new Error('Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (Supabase → Project Settings → API).');
+}
 
-connection.connect((err) => {
-    if (err) {
-        console.error('Database connection failed:', err);
-        return;
-    }
-    console.log('Connected to MySQL database');
-});
+// Server-side client using the service role key. Never expose this key to the frontend.
+const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    { auth: { persistSession: false } }
+);
 
-module.exports = connection;
+module.exports = supabase;

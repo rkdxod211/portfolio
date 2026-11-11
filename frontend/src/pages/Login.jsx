@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Lock, X } from 'lucide-react';
+import { setToken } from '../adminApi';
 
 export default function Login({ onLogin, onClose }) {
     const [username, setUsername] = useState('');
@@ -24,6 +25,7 @@ export default function Login({ onLogin, onClose }) {
             const data = await response.json();
 
             if (response.ok) {
+                setToken(data.token);
                 onLogin();
             } else {
                 setError(data.error || 'Invalid username or password!');

@@ -8,12 +8,9 @@ import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
 import './style.css';
+import { getToken, setToken } from './adminApi';
 
 const initialDatabase = {
-    admin: {
-        username: 'aaa',
-        password: '123123'
-    },
     about: {
         introduction: '',
         interests: ''
@@ -28,19 +25,14 @@ const initialDatabase = {
         github: '',
         linkedin: ''
     },
-    projects: {
-        Web: [],
-        App: [],
-        Game: [],
-        ETC: []
-    },
+    projects: [],
     education: []
 };
 
 export default function App() {
     const [currentPage, setCurrentPage] = useState(0);
     const [viewMode, setViewMode] = useState('portfolio'); 
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(getToken()));
     const [database, setDatabase] = useState(initialDatabase);
     const [loading, setLoading] = useState(true);
     const scrollContainerRef = useRef(null);
@@ -143,6 +135,7 @@ export default function App() {
     };
 
     const handleLogout = () => {
+        setToken(null);
         setIsAuthenticated(false);
         setViewMode('portfolio');
         setCurrentPage(0);

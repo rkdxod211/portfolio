@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Edit2, Save, X, LogOut } from 'lucide-react';
+import ProjectVisibility from '../components/ProjectVisibility';
+import { adminFetch } from '../adminApi';
 
 export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSite }) {
     const [editMode, setEditMode] = useState({});
@@ -13,7 +15,7 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
         try {
             
             if (section === 'about') {
-                const response = await fetch('/api/content/about', {
+                const response = await adminFetch('/api/content/about', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -30,7 +32,7 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 }
             } 
             else if (section === 'experience') {
-                await fetch('/api/content/experience/languages', {
+                await adminFetch('/api/content/experience/languages', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ languages: editedData.experience.languages })
@@ -38,7 +40,7 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 
                 for (const club of editedData.experience.clubs) {
                     if (club.id) {
-                        await fetch(`/api/content/experience/clubs/${club.id}`, {
+                        await adminFetch(`/api/content/experience/clubs/${club.id}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(club)
@@ -48,7 +50,7 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 
                 for (const work of editedData.experience.work) {
                     if (work.id) {
-                        await fetch(`/api/content/experience/work/${work.id}`, {
+                        await adminFetch(`/api/content/experience/work/${work.id}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(work)
@@ -61,7 +63,7 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 alert('SAVED');
             } 
             else if (section === 'contact') {
-                const response = await fetch('/api/content/contact', {
+                const response = await adminFetch('/api/content/contact', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -80,13 +82,13 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
             else if (section === 'education') {
             for (const edu of editedData.education) {
                 if (edu.id && edu.id > 0) {
-                    await fetch(`/api/content/education/${edu.id}`, {
+                    await adminFetch(`/api/content/education/${edu.id}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(edu)
                     });
                 } else {
-                    const response = await fetch('/api/content/education', {
+                    const response = await adminFetch('/api/content/education', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(edu)
@@ -103,57 +105,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
             setEditMode({ ...editMode, [section]: false });
             alert('SAVED');
         }
-            else if (section === 'projects') {
-                for (const category in editedData.projects) {
-                    for (const project of editedData.projects[category]) {
-                        if (project.id && project.id > 0) {
-                            await fetch(`/api/projects/${project.id}`, {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    name: project.name,
-                                    description: project.description,
-                                    category: category,
-                                    thumbnail: project.thumbnail,
-                                    githubLink: project.githubLink,
-                                    likes: project.likes,
-                                    views: project.views,
-                                    downloads: project.downloads
-                                })
-                            });
-                        } else {
-                            const response = await fetch('/api/projects', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    name: project.name,
-                                    description: project.description,
-                                    category: category,
-                                    thumbnail: project.thumbnail,
-                                    githubLink: project.githubLink
-                                })
-                            });
-                            
-                            if (response.ok) {
-                                const newProject = await response.json();
-                            }
-                        }
-                    }
-                }
-                
-                const projectsResponse = await fetch('/api/projects');
-                const freshProjects = await projectsResponse.json();
-                
-                const updatedData = {
-                    ...editedData,
-                    projects: freshProjects
-                };
-                setEditedData(updatedData);
-                
-                onUpdateDatabase(updatedData);
-                setEditMode({ ...editMode, [section]: false });
-                alert('SAVED');
-            }
             else {
                 onUpdateDatabase(editedData);
                 setEditMode({ ...editMode, [section]: false });
@@ -187,86 +138,6 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
             ...editedData,
             experience: { ...editedData.experience, work: newWork }
         });
-    };
-
-    const handleAddProject = (category) => {
-        const newProjects = { ...editedData.projects };
-        
-        const newProject = {
-            id: 0,  
-            name: '',
-            description: '',
-            thumbnail: '',
-            githubLink: '',
-            likes: 0,
-            views: 0,
-            downloads: 0
-        };
-
-        newProjects[category].push(newProject);
-        setEditedData({
-            ...editedData,
-            projects: newProjects
-        });
-    };
-
-    const handleDeleteProject = async (category, index, projectName, projectId) => {
-        const confirmDelete = window.confirm(
-            `Are you sure you want to delete "${projectName}"?\n\nThis action cannot be undone.`
-        );
-
-        if (confirmDelete) {
-            try {
-                if (projectId && projectId > 0) {
-                    const response = await fetch(`/api/projects/${projectId}`, {
-                        method: 'DELETE'
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error('삭제에 실패했습니다');
-                    }
-                    
-                }
-                
-                const newProjects = { ...editedData.projects };
-                newProjects[category].splice(index, 1);
-                setEditedData({
-                    ...editedData,
-                    projects: newProjects
-                });
-                
-                alert('삭제되었습니다!');
-            } catch (error) {
-                alert('삭제에 실패했습니다: ' + error.message);
-            }
-        }
-    };
-
-    const validateAndSave = (section) => {
-        if (section === 'projects') {
-            let isValid = true;
-            let errorMessage = '';
-
-            Object.entries(editedData.projects).forEach(([category, projects]) => {
-                projects.forEach((project, index) => {
-                    if (!project.name || !project.description || !project.thumbnail) {
-                        isValid = false;
-                        errorMessage = `Project ${index + 1} in ${category} category is missing required fields (Name, Description, or Thumbnail URL).`;
-                    }
-                    if (project.likes === '' || project.views === '' || project.downloads === '') {
-                        isValid = false;
-                        errorMessage = `Project ${index + 1} in ${category} category must have values for Likes, Views, and Downloads (can be 0).`;
-                    }
-                });
-            });
-
-            if (!isValid) {
-                alert(errorMessage);
-                return;
-            }
-        }
-
-        handleSave(section);
     };
 
     return (
@@ -675,206 +546,7 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                 </div>
             </div>
 
-            {/* Projects Section */}
-            <div className="admin-section">
-                <div className="section-header">
-                    <h2 className="section-title">Projects Section</h2>
-                    {!editMode.projects ? (
-                        <button onClick={() => handleEdit('projects')} className="btn-edit">
-                            <Edit2 size={16} /> Edit
-                        </button>
-                    ) : (
-                        <div className="edit-actions">
-                            <button onClick={() => validateAndSave('projects')} className="btn-save">
-                                <Save size={16} /> Save
-                            </button>
-                            <button onClick={() => handleCancel('projects')} className="btn-cancel">
-                                <X size={16} /> Cancel
-                            </button>
-                        </div>
-                    )}
-                </div>
-                {['Web', 'App', 'Game', 'ETC']
-                    .filter(category => editedData.projects[category]) 
-                    .map((category) => (
-                    <div key={category} className="form-group">
-                        <div className="category-header-row">
-                            <h3 className="subsection-title">{category}</h3>
-                            {editMode.projects && (
-                                <button 
-                                    onClick={() => handleAddProject(category)} 
-                                    className="btn-add-project"
-                                >
-                                    + Add Project
-                                </button>
-                            )}
-                        </div>
-                        <div className="admin-table-container">
-                            <table className="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                        <th>Thumbnail URL</th>
-                                        <th>GitHub Link</th>
-                                        <th>Likes</th>
-                                        <th>Views</th>
-                                        <th>Downloads</th>
-                                        {editMode.projects && <th>Actions</th>}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {editedData.projects[category].map((project, index) => (
-                                        <tr key={project.id}>
-                                            <td>
-                                                {editMode.projects ? (
-                                                    <input
-                                                        type="text"
-                                                        value={project.name}
-                                                        onChange={(e) => {
-                                                            const newProjects = { ...editedData.projects };
-                                                            newProjects[category][index].name = e.target.value;
-                                                            setEditedData({
-                                                                ...editedData,
-                                                                projects: newProjects
-                                                            });
-                                                        }}
-                                                        className="table-input"
-                                                        required
-                                                    />
-                                                ) : project.name}
-                                            </td>
-                                            <td>
-                                                {editMode.projects ? (
-                                                    <input
-                                                        type="text"
-                                                        value={project.description}
-                                                        onChange={(e) => {
-                                                            const newProjects = { ...editedData.projects };
-                                                            newProjects[category][index].description = e.target.value;
-                                                            setEditedData({
-                                                                ...editedData,
-                                                                projects: newProjects
-                                                            });
-                                                        }}
-                                                        className="table-input"
-                                                        required
-                                                    />
-                                                ) : project.description}
-                                            </td>
-                                            <td>
-                                                {editMode.projects ? (
-                                                    <input
-                                                        type="text"
-                                                        value={project.thumbnail}
-                                                        onChange={(e) => {
-                                                            const newProjects = { ...editedData.projects };
-                                                            newProjects[category][index].thumbnail = e.target.value;
-                                                            setEditedData({
-                                                                ...editedData,
-                                                                projects: newProjects
-                                                            });
-                                                        }}
-                                                        className="table-input"
-                                                        placeholder="Image URL"
-                                                        required
-                                                    />
-                                                ) : project.thumbnail}
-                                            </td>
-                                            <td>
-                                                {editMode.projects ? (
-                                                    <input
-                                                        type="url"
-                                                        value={project.githubLink || ''}
-                                                        onChange={(e) => {
-                                                            const newProjects = { ...editedData.projects };
-                                                            newProjects[category][index].githubLink = e.target.value;
-                                                            setEditedData({
-                                                                ...editedData,
-                                                                projects: newProjects
-                                                            });
-                                                        }}
-                                                        className="table-input"
-                                                        placeholder="GitHub URL (optional)"
-                                                    />
-                                                ) : (project.githubLink || 'N/A')}
-                                            </td>
-                                            <td>
-                                                {editMode.projects ? (
-                                                    <input
-                                                        type="number"
-                                                        value={project.likes}
-                                                        onChange={(e) => {
-                                                            const newProjects = { ...editedData.projects };
-                                                            newProjects[category][index].likes = parseInt(e.target.value) || 0;
-                                                            setEditedData({
-                                                                ...editedData,
-                                                                projects: newProjects
-                                                            });
-                                                        }}
-                                                        className="table-input"
-                                                        style={{ width: '80px' }}
-                                                        required
-                                                    />
-                                                ) : project.likes}
-                                            </td>
-                                            <td>
-                                                {editMode.projects ? (
-                                                    <input
-                                                        type="number"
-                                                        value={project.views}
-                                                        onChange={(e) => {
-                                                            const newProjects = { ...editedData.projects };
-                                                            newProjects[category][index].views = parseInt(e.target.value) || 0;
-                                                            setEditedData({
-                                                                ...editedData,
-                                                                projects: newProjects
-                                                            });
-                                                        }}
-                                                        className="table-input"
-                                                        style={{ width: '80px' }}
-                                                        required
-                                                    />
-                                                ) : project.views}
-                                            </td>
-                                            <td>
-                                                {editMode.projects ? (
-                                                    <input
-                                                        type="number"
-                                                        value={project.downloads}
-                                                        onChange={(e) => {
-                                                            const newProjects = { ...editedData.projects };
-                                                            newProjects[category][index].downloads = parseInt(e.target.value) || 0;
-                                                            setEditedData({
-                                                                ...editedData,
-                                                                projects: newProjects
-                                                            });
-                                                        }}
-                                                        className="table-input"
-                                                        style={{ width: '80px' }}
-                                                        required
-                                                    />
-                                                ) : project.downloads}
-                                            </td>
-                                            {editMode.projects && (
-                                                <td>
-                                                    <button
-                                                        onClick={() => handleDeleteProject(category, index, project.name, project.id)}
-                                                        className="btn-delete-project"
-                                                        title="Delete Project"
-                                                    >
-                                                        <X size={16} />
-                                                    </button>
-                                                </td>
-                                            )}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                ))}
-            </div>
+            <ProjectVisibility />
         </div>
     );
 }

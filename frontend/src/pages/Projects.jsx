@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Heart, Eye, Download, Grid3x3, List, FileText, Github, ArrowLeft } from 'lucide-react';
+import { Heart, Eye, Download, Grid3x3, List, Github, ArrowLeft, ExternalLink } from 'lucide-react';
 
 export default function Projects({ database }) {
-    const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedProject, setSelectedProject] = useState(null);
     const [viewMode, setViewMode] = useState("tile"); 
     const [likedProjects, setLikedProjects] = useState({});
@@ -69,7 +68,12 @@ export default function Projects({ database }) {
         setSelectedProject(null);
     };
 
-    const handleDownload = async (projectName, projectId) => {
+    const handleDownload = async (project) => {
+        const projectId = project.id;
+        if (project.downloadUrl) {
+            window.open(project.downloadUrl, '_blank', 'noopener');
+        }
+
         try {
             const response = await fetch(`/api/projects/${projectId}/download`, {
                 method: 'POST'
@@ -85,8 +89,6 @@ export default function Projects({ database }) {
             }
         } catch (error) {
         }
-        
-        alert(`Downloaded ${projectName}`);
     };
 
     const getProjectStats = (project) => {
@@ -123,7 +125,10 @@ export default function Projects({ database }) {
                         <div className="project-detail-info">
                             <div className="project-detail-section">
                                 <h3>Description</h3>
-                                <p>{selectedProject.description}</p>
+                                <p>{selectedProject.description || 'No description provided.'}</p>
+                                {selectedProject.language && (
+                                    <p style={{ opacity: 0.7 }}>Language: {selectedProject.language}</p>
+                                )}
                             </div>
 
                             <div className="project-detail-stats">
@@ -161,8 +166,19 @@ export default function Projects({ database }) {
                                         View on GitHub
                                     </a>
                                 )}
+                                {selectedProject.homepage && (
+                                    <a 
+                                        href={selectedProject.homepage}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="project-action-btn github-btn"
+                                    >
+                                        <ExternalLink size={20} />
+                                        Live Demo
+                                    </a>
+                                )}
                                 <button 
-                                    onClick={() => handleDownload(selectedProject.name, selectedProject.id)}
+                                    onClick={() => handleDownload(selectedProject)}
                                     className="project-action-btn download-btn"
                                 >
                                     <Download size={20} />
@@ -177,9 +193,11 @@ export default function Projects({ database }) {
     }
 
     const renderProjects = () => {
-        if (!selectedCategory) return null;
-        const projects = database.projects[selectedCategory] || [];
-        
+        const projects = Array.isArray(database.projects) ? database.projects : [];
+        if (projects.length === 0) {
+            return <p style={{ fontSize: '20px', opacity: 0.8 }}>No projects to show yet.</p>;
+        }
+
         return projects.map((project) => {
             const stats = getProjectStats(project); 
             
@@ -241,49 +259,27 @@ export default function Projects({ database }) {
         <div>
             <h1>PROJECTS</h1>
             
-            <div className="project-categories">
-                {['Web', 'App', 'Game', 'ETC'].filter(cat => database.projects[cat]).map((cat) => (
-                    <div 
-                        key={cat} 
-                        className="category-item" 
-                        onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
+            <div className="view-controls">
+                <h2>VIEW MY PROJECTS</h2>
+                <div className="view-toggle">
+                    <button 
+                        className={`view-btn ${viewMode === 'tile' ? 'active' : ''}`}
+                        onClick={() => setViewMode('tile')}
                     >
-                        <div className={`folder-icon ${selectedCategory === cat ? 'active' : ''}`}>
-                            <FileText size={48} color="white" />
-                            <div className="category-count">
-                                {database.projects[cat].length}
-                            </div>
-                        </div>
-                        <h3>{cat}</h3>
-                    </div>
-                ))}
+                        <Grid3x3 size={24} color="white" />
+                    </button>
+                    <button 
+                        className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+                        onClick={() => setViewMode('list')}
+                    >
+                        <List size={24} color="white" />
+                    </button>
+                </div>
             </div>
-
-            {selectedCategory && (
-                <>
-                    <div className="view-controls">
-                        <h2>VIEW MY PROJECTS</h2>
-                        <div className="view-toggle">
-                            <button 
-                                className={`view-btn ${viewMode === 'tile' ? 'active' : ''}`}
-                                onClick={() => setViewMode('tile')}
-                            >
-                                <Grid3x3 size={24} color="white" />
-                            </button>
-                            <button 
-                                className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
-                                onClick={() => setViewMode('list')}
-                            >
-                                <List size={24} color="white" />
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div className={viewMode === 'tile' ? 'projects-grid' : 'projects-list'}>
-                        {renderProjects()}
-                    </div>
-                </>
-            )}
+            
+            <div className={viewMode === 'tile' ? 'projects-grid' : 'projects-list'}>
+                {renderProjects()}
+            </div>
         </div>
     );
 }

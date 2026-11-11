@@ -180,51 +180,113 @@ p {
     50% { background-position: 0 -100%, 0 0; }
 }
 
-/* Guestbook Animation */
-.guestbook-container {
+/* Home: Schrödinger's cat popping out of a box */
+.cute-strip {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 150px;
+    height: 160px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.1);
-    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0));
 }
 
-.guestbook-scroll {
-    display: flex;
-    animation: scroll-left 30s linear infinite;
-    gap: 40px;
-    padding: 20px;
+.floater {
+    position: absolute;
+    bottom: -24px;
+    opacity: 0;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+    animation: floater-rise 9s ease-in-out infinite;
 }
 
-
-
-@keyframes scroll-left {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+@keyframes floater-rise {
+    0%   { transform: translate(0, 0) rotate(-10deg) scale(0.7); opacity: 0; }
+    15%  { opacity: 0.95; }
+    50%  { transform: translate(10px, -80px) rotate(8deg) scale(1); }
+    85%  { opacity: 0.8; }
+    100% { transform: translate(-6px, -170px) rotate(-6deg) scale(0.9); opacity: 0; }
 }
 
-.guestbook-item {
-    min-width: 300px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+.catbox {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    width: 200px;
+    height: 160px;
+    transform: translateX(-50%);
+    overflow: visible;
 }
 
-.guestbook-author {
-    font-size: 18px;
-    font-weight: 700;
-    color: #0479AF;
-    margin-bottom: 5px;
+.catbox .cat-fur { fill: #fff8ef; stroke: #6b4f3a; stroke-width: 2.5; stroke-linejoin: round; }
+.catbox .cat-ear-in { fill: #ffc4d1; }
+.catbox .cat-patch { fill: #f5b971; }
+.catbox .cat-eye { fill: #3d2c26; }
+.catbox .cat-blush { fill: #ffb3c7; opacity: 0.75; }
+.catbox .cat-nose { fill: #ff8fa8; }
+.catbox .cat-line { fill: none; stroke: #6b4f3a; stroke-width: 1.8; stroke-linecap: round; }
+
+.catbox .box-inside { fill: #a8733f; }
+.catbox .box-front { fill: #e3b07a; stroke: #a8733f; stroke-width: 2.5; }
+.catbox .box-flap { fill: #edc08f; stroke: #a8733f; stroke-width: 2.5; stroke-linejoin: round; }
+.catbox .box-sticker { fill: #c9b6ff; stroke: #c9b6ff; }
+
+.catbox .tail-outline { fill: none; stroke: #6b4f3a; stroke-width: 12; stroke-linecap: round; }
+.catbox .tail-fill { fill: none; stroke: #fff8ef; stroke-width: 7; stroke-linecap: round; }
+.catbox .cat-tail { transform-origin: 152px 118px; animation: tail-wag 1.4s ease-in-out infinite alternate; }
+
+@keyframes tail-wag {
+    from { transform: rotate(-12deg); }
+    to   { transform: rotate(10deg); }
 }
 
-.guestbook-message {
-    font-size: 16px;
-    font-weight: 400;
-    color: rgba(255, 255, 255);
+/* 8s loop: pop up, look around, blink, duck down, box wobbles, "?" */
+.catbox .cat-pop { animation: cat-pop 8s cubic-bezier(.34, 1.4, .64, 1) infinite; }
+
+@keyframes cat-pop {
+    0%, 4%    { transform: translateY(85px); }
+    12%, 58%  { transform: translateY(0); }
+    66%, 100% { transform: translateY(85px); }
+}
+
+.catbox .cat-eyes { animation: cat-look 8s ease-in-out infinite; }
+
+@keyframes cat-look {
+    0%, 20%  { transform: translateX(0); }
+    25%, 33% { transform: translateX(-4px); }
+    38%, 46% { transform: translateX(4px); }
+    50%, 100% { transform: translateX(0); }
+}
+
+.catbox .cat-eye { transform-box: fill-box; transform-origin: center; animation: cat-blink 8s infinite; }
+
+@keyframes cat-blink {
+    0%, 17%, 19%, 52%, 54%, 100% { transform: scaleY(1); }
+    18%, 53% { transform: scaleY(0.1); }
+}
+
+.catbox .catbox-box { transform-box: fill-box; transform-origin: 50% 100%; animation: box-wobble 8s ease-in-out infinite; }
+
+@keyframes box-wobble {
+    0%, 70%, 92%, 100% { transform: rotate(0); }
+    74% { transform: rotate(-3deg); }
+    78% { transform: rotate(3deg); }
+    82% { transform: rotate(-2deg); }
+    86% { transform: rotate(1.5deg); }
+}
+
+.catbox .catbox-bubble { fill: #ffffff; opacity: 0; transform-box: fill-box; transform-origin: 0% 100%; animation: bubble 8s ease-in-out infinite; }
+.catbox .catbox-bubble text { fill: #6b4f3a; font-size: 18px; font-weight: 800; font-family: "Exo 2", sans-serif; }
+
+@keyframes bubble {
+    0%, 72%  { opacity: 0; transform: scale(0.4); }
+    78%, 94% { opacity: 1; transform: scale(1); }
+    100%     { opacity: 0; transform: scale(0.4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cute-strip *, .cute-strip { animation: none !important; }
+    .catbox .cat-pop { transform: translateY(0); }
+    .floater { opacity: 0.7; bottom: 40px; }
 }
 
 /* Project Categories */
@@ -455,120 +517,7 @@ p {
 /* Add these styles to your existing style.css file */
 
 /* Guestbook Form Section */
-.guestbook-form-section {
-    margin-top: 80px;
-    margin-bottom: 100px;
-}
 
-.guestbook-form-section h2 {
-    font-family: "Exo 2", sans-serif;
-    font-weight: 700;
-    font-size: 50px;
-    margin-bottom: 30px;
-    color: white;
-}
-
-.guestbook-form {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid white;
-    border-radius: 15px;
-    padding: 40px;
-    max-width: 600px;
-}
-
-.guestbook-form-group {
-    margin-bottom: 25px;
-}
-
-.guestbook-label {
-    display: block;
-    font-family: "Exo 2", sans-serif;
-    font-weight: 700;
-    font-size: 24px;
-    color: white;
-    margin-bottom: 10px;
-}
-
-.guestbook-input {
-    width: 100%;
-    padding: 15px;
-    font-family: "Exo 2", sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-    border: 2px solid #0479AF;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    color: #333;
-    transition: all 0.3s;
-}
-
-.guestbook-input:focus {
-    outline: none;
-    border-color: white;
-    background: white;
-    transform: scale(1.02);
-}
-
-.guestbook-input::placeholder {
-    color: rgba(0, 0, 0, 0.4);
-    font-weight: 400;
-}
-
-.guestbook-textarea {
-    width: 100%;
-    padding: 15px;
-    font-family: "Exo 2", sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-    border: 2px solid #0479AF;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    color: #333;
-    resize: vertical;
-    min-height: 120px;
-    transition: all 0.3s;
-}
-
-.guestbook-textarea:focus {
-    outline: none;
-    border-color: white;
-    background: white;
-    transform: scale(1.02);
-}
-
-.guestbook-textarea::placeholder {
-    color: rgba(0, 0, 0, 0.4);
-    font-weight: 400;
-}
-
-.guestbook-submit {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 15px 40px;
-    background: #0479AF;
-    color: white;
-    border: 2px solid white;
-    border-radius: 10px;
-    font-family: "Exo 2", sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 10px;
-}
-
-.guestbook-submit:hover {
-    background: white;
-    color: #0479AF;
-    border-color: #0479AF;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(4, 121, 175, 0.3);
-}
-
-.guestbook-submit:active {
-    transform: translateY(-1px);
-}
 
 .admin-button {
     position: absolute;
