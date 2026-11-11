@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://portfolio-api-sigma-lyart.vercel.app/api/:path*" }
+  ]
+}
