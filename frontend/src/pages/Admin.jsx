@@ -409,7 +409,7 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                                     <th>Type</th>
                                     <th>Label</th>
                                     <th>Email / URL</th>
-                                    {editMode.contact && <th>Actions</th>}
+                                    {editMode.contact && <th className="row-actions-cell">Actions</th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -420,7 +420,7 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                                                 <select
                                                     value={item.type}
                                                     onChange={(e) => updateContact(index, 'type', e.target.value)}
-                                                    className="table-input"
+                                                    className="table-select"
                                                 >
                                                     <option value="email">Email</option>
                                                     <option value="link">Link</option>
@@ -450,12 +450,14 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                                             ) : item.value}
                                         </td>
                                         {editMode.contact && (
-                                            <td style={{ whiteSpace: 'nowrap' }}>
-                                                <button onClick={() => moveContact(index, -1)} className="btn-edit" title="Move up" disabled={index === 0}>↑</button>
-                                                <button onClick={() => moveContact(index, 1)} className="btn-edit" title="Move down" disabled={index === contactItems.length - 1} style={{ margin: '0 6px' }}>↓</button>
-                                                <button onClick={() => removeContact(index)} className="btn-delete-project" title="Delete">
-                                                    <X size={16} />
-                                                </button>
+                                            <td className="row-actions-cell">
+                                                <div className="row-actions">
+                                                    <button onClick={() => moveContact(index, -1)} className="icon-btn" title="Move up" disabled={index === 0}>↑</button>
+                                                    <button onClick={() => moveContact(index, 1)} className="icon-btn" title="Move down" disabled={index === contactItems.length - 1}>↓</button>
+                                                    <button onClick={() => removeContact(index)} className="icon-btn danger" title="Delete">
+                                                        <X size={16} />
+                                                    </button>
+                                                </div>
                                             </td>
                                         )}
                                     </tr>
@@ -489,7 +491,7 @@ function EntryTable({ title, items, editing, onChange, onAdd, onRemove }) {
                         <tr>
                             <th>Title</th>
                             <th>Detail</th>
-                            {editing && <th>Actions</th>}
+                            {editing && <th className="row-actions-cell">Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -518,10 +520,12 @@ function EntryTable({ title, items, editing, onChange, onAdd, onRemove }) {
                                     ) : item.detail}
                                 </td>
                                 {editing && (
-                                    <td>
-                                        <button onClick={() => onRemove(index)} className="btn-delete-project" title="Delete">
-                                            <X size={16} />
-                                        </button>
+                                    <td className="row-actions-cell">
+                                        <div className="row-actions">
+                                            <button onClick={() => onRemove(index)} className="icon-btn danger" title="Delete">
+                                                <X size={16} />
+                                            </button>
+                                        </div>
                                     </td>
                                 )}
                             </tr>

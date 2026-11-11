@@ -180,113 +180,95 @@ p {
     50% { background-position: 0 -100%, 0 0; }
 }
 
-/* Home: Schrödinger's cat popping out of a box */
-.cute-strip {
+/* Home: cloud buddy drifting across the sky */
+.sky-strip {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 160px;
+    height: 170px;
     overflow: hidden;
-    background: linear-gradient(to top, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0));
 }
 
-.floater {
+.twinkle {
     position: absolute;
-    bottom: -24px;
+    fill: white;
     opacity: 0;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
-    animation: floater-rise 9s ease-in-out infinite;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+    animation: twinkle 4s ease-in-out infinite;
 }
 
-@keyframes floater-rise {
-    0%   { transform: translate(0, 0) rotate(-10deg) scale(0.7); opacity: 0; }
-    15%  { opacity: 0.95; }
-    50%  { transform: translate(10px, -80px) rotate(8deg) scale(1); }
-    85%  { opacity: 0.8; }
-    100% { transform: translate(-6px, -170px) rotate(-6deg) scale(0.9); opacity: 0; }
+@keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+    50%      { opacity: 0.9; transform: scale(1) rotate(45deg); }
 }
 
-.catbox {
+.cloud-drift {
     position: absolute;
-    bottom: -4px;
-    left: 50%;
-    width: 200px;
-    height: 160px;
-    transform: translateX(-50%);
+    bottom: 14px;
+    left: -180px;
+    width: 168px;
+    height: 120px;
+    animation: cloud-drift 32s linear infinite;
+}
+
+@keyframes cloud-drift {
+    from { left: -180px; }
+    to   { left: 100%; }
+}
+
+.cloud-buddy {
+    width: 168px;
+    height: 120px;
     overflow: visible;
+    animation: cloud-bob 3s ease-in-out infinite alternate;
 }
 
-.catbox .cat-fur { fill: #fff8ef; stroke: #6b4f3a; stroke-width: 2.5; stroke-linejoin: round; }
-.catbox .cat-ear-in { fill: #ffc4d1; }
-.catbox .cat-patch { fill: #f5b971; }
-.catbox .cat-eye { fill: #3d2c26; }
-.catbox .cat-blush { fill: #ffb3c7; opacity: 0.75; }
-.catbox .cat-nose { fill: #ff8fa8; }
-.catbox .cat-line { fill: none; stroke: #6b4f3a; stroke-width: 1.8; stroke-linecap: round; }
-
-.catbox .box-inside { fill: #a8733f; }
-.catbox .box-front { fill: #e3b07a; stroke: #a8733f; stroke-width: 2.5; }
-.catbox .box-flap { fill: #edc08f; stroke: #a8733f; stroke-width: 2.5; stroke-linejoin: round; }
-.catbox .box-sticker { fill: #c9b6ff; stroke: #c9b6ff; }
-
-.catbox .tail-outline { fill: none; stroke: #6b4f3a; stroke-width: 12; stroke-linecap: round; }
-.catbox .tail-fill { fill: none; stroke: #fff8ef; stroke-width: 7; stroke-linecap: round; }
-.catbox .cat-tail { transform-origin: 152px 118px; animation: tail-wag 1.4s ease-in-out infinite alternate; }
-
-@keyframes tail-wag {
-    from { transform: rotate(-12deg); }
-    to   { transform: rotate(10deg); }
+@keyframes cloud-bob {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-8px); }
 }
 
-/* 8s loop: pop up, look around, blink, duck down, box wobbles, "?" */
-.catbox .cat-pop { animation: cat-pop 8s cubic-bezier(.34, 1.4, .64, 1) infinite; }
-
-@keyframes cat-pop {
-    0%, 4%    { transform: translateY(85px); }
-    12%, 58%  { transform: translateY(0); }
-    66%, 100% { transform: translateY(85px); }
+.cloud-buddy .cloud-shape {
+    fill: rgba(255, 255, 255, 0.95);
+    stroke: white;
+    stroke-width: 2;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 6px 10px rgba(4, 121, 175, 0.25));
 }
 
-.catbox .cat-eyes { animation: cat-look 8s ease-in-out infinite; }
-
-@keyframes cat-look {
-    0%, 20%  { transform: translateX(0); }
-    25%, 33% { transform: translateX(-4px); }
-    38%, 46% { transform: translateX(4px); }
-    50%, 100% { transform: translateX(0); }
+.cloud-buddy .cloud-eyes {
+    fill: #0479AF;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: cloud-blink 5s infinite;
 }
 
-.catbox .cat-eye { transform-box: fill-box; transform-origin: center; animation: cat-blink 8s infinite; }
-
-@keyframes cat-blink {
-    0%, 17%, 19%, 52%, 54%, 100% { transform: scaleY(1); }
-    18%, 53% { transform: scaleY(0.1); }
+@keyframes cloud-blink {
+    0%, 94%, 100% { transform: scaleY(1); }
+    97%           { transform: scaleY(0.1); }
 }
 
-.catbox .catbox-box { transform-box: fill-box; transform-origin: 50% 100%; animation: box-wobble 8s ease-in-out infinite; }
+.cloud-buddy .cloud-blush { fill: #ffb3c7; opacity: 0.55; }
+.cloud-buddy .cloud-smile { fill: none; stroke: #0479AF; stroke-width: 2.2; stroke-linecap: round; }
 
-@keyframes box-wobble {
-    0%, 70%, 92%, 100% { transform: rotate(0); }
-    74% { transform: rotate(-3deg); }
-    78% { transform: rotate(3deg); }
-    82% { transform: rotate(-2deg); }
-    86% { transform: rotate(1.5deg); }
+.cloud-buddy .orbit-ring {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.55);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 5;
 }
 
-.catbox .catbox-bubble { fill: #ffffff; opacity: 0; transform-box: fill-box; transform-origin: 0% 100%; animation: bubble 8s ease-in-out infinite; }
-.catbox .catbox-bubble text { fill: #6b4f3a; font-size: 18px; font-weight: 800; font-family: "Exo 2", sans-serif; }
-
-@keyframes bubble {
-    0%, 72%  { opacity: 0; transform: scale(0.4); }
-    78%, 94% { opacity: 1; transform: scale(1); }
-    100%     { opacity: 0; transform: scale(0.4); }
+.cloud-buddy .electron {
+    fill: #0479AF;
+    stroke: white;
+    stroke-width: 1.5;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .cute-strip *, .cute-strip { animation: none !important; }
-    .catbox .cat-pop { transform: translateY(0); }
-    .floater { opacity: 0.7; bottom: 40px; }
+    .sky-strip *, .sky-strip { animation: none !important; }
+    .cloud-drift { left: 45%; }
+    .twinkle { opacity: 0.6; }
 }
 
 /* Project Categories */
@@ -443,6 +425,10 @@ p {
 
 .experience-item {
     margin-bottom: 20px;
+}
+
+.experience-item:last-child {
+    margin-bottom: 0;
 }
 
 .experience-title {
@@ -1152,3 +1138,59 @@ p {
 .table-input:focus:invalid {
     outline: 2px solid #ff6b6b;
 }
+
+/* Admin: dropdown matching the text inputs */
+.table-select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    padding: 8px 32px 8px 10px;
+    border-radius: 4px;
+    border: 1px solid #0479AF;
+    background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%230479AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+    color: #333;
+    font-size: 14px;
+    font-family: 'Exo 2', sans-serif;
+    cursor: pointer;
+}
+
+.table-select:focus {
+    outline: 2px solid rgba(4, 121, 175, 0.35);
+    outline-offset: 1px;
+}
+
+/* Admin: compact row action buttons */
+.admin-table td.row-actions-cell,
+.admin-table th.row-actions-cell {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.row-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: #0479AF;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.icon-btn:hover:not(:disabled) { background: #035a80; }
+.icon-btn:disabled { opacity: 0.3; cursor: default; }
+.icon-btn.danger { background: #ff6b6b; }
+.icon-btn.danger:hover { background: #ff5252; }
