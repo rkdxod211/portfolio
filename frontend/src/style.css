@@ -1558,7 +1558,7 @@ button.contact-action:hover {
     padding: 0;
     border: none;
     background: none;
-    border-radius: 50%;
+    border-radius: 12px;
     cursor: pointer;
     -webkit-user-select: none;
     user-select: none;
@@ -1626,7 +1626,7 @@ button.contact-action:hover {
 .topnav-photo {
     width: 44px;
     height: 44px;
-    border-radius: 50%;
+    border-radius: 12px;
     object-fit: cover;
     border: 1px solid var(--line);
     -webkit-user-drag: none;
