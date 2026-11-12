@@ -45,6 +45,7 @@ export default function App() {
     const [database, setDatabase] = useState(initialDatabase);
     const [loading, setLoading] = useState(true);
     const [assets, setAssets] = useState(null); // server values { key: url | null }; null until loaded
+    const ready = !loading && assets !== null;
     const scrollContainerRef = useRef(null);
     const pages = ['home', 'about', 'projects', 'research', 'experience', 'contact'];
 
@@ -94,35 +95,31 @@ export default function App() {
         const container = scrollContainerRef.current;
         if (!container || viewMode !== 'portfolio') return;
 
+        // The active section is the last one whose top has passed the middle of
+        // the screen, so long sections (e.g. Research) stay active while reading them.
         const handleScroll = () => {
-            const scrollPosition = container.scrollTop;
-            const viewportHeight = container.clientHeight;
-            const sections = document.querySelectorAll('.page-section');
-            let closestPage = 0;
-            let closestDistance = Infinity;
-
+            const middle = container.scrollTop + container.clientHeight / 2;
+            const sections = container.querySelectorAll('.page-section');
+            let active = 0;
             sections.forEach((section, index) => {
-                const sectionTop = section.offsetTop;
-                const distanceFromCenter = Math.abs(sectionTop - (scrollPosition + viewportHeight / 2));
-                if (distanceFromCenter < closestDistance) {
-                    closestDistance = distanceFromCenter;
-                    closestPage = index;
-                }
+                if (section.offsetTop <= middle) active = index;
             });
-
-            setCurrentPage(closestPage);
+            setCurrentPage(active);
         };
 
+        handleScroll();
         container.addEventListener('scroll', handleScroll);
         return () => container.removeEventListener('scroll', handleScroll);
-    }, [viewMode]);
+        // `ready`: the scroll container only exists once the loading screen is gone.
+    }, [viewMode, ready]);
 
     const scrollToPage = (pageIndex) => {
         const container = scrollContainerRef.current;
         if (!container) return;
 
-        const sections = document.querySelectorAll('.page-section');
+        const sections = container.querySelectorAll('.page-section');
         if (sections[pageIndex]) {
+            setCurrentPage(pageIndex);
             const targetSection = sections[pageIndex];
             container.scrollTo({
                 top: targetSection.offsetTop,
@@ -190,7 +187,7 @@ export default function App() {
         setDatabase(newData);
     };
 
-    if (loading || !assets) {
+    if (!ready) {
         return (
             <div style={{
                 display: 'flex',
