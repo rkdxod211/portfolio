@@ -81,20 +81,13 @@ export default function Home() {
             </div>
 
             <div className="hero-body">
-                <div>
-                    I'm a sophomore at the University of Wisconsin–Madison, double majoring
-                    in <strong>Computer Science and Mathematics</strong>. I'm particularly interested
-                    in <strong>cryptography</strong>, <strong>quantum computing</strong>, and
-                    the <strong>mathematical foundations of computation</strong>.
-                </div>
-                <div>
-                    I believe that truly understanding a field means looking beyond how things work
-                    and digging into the principles that make them possible. For me, mathematics
-                    provides that foundation in computer science. This curiosity draws me toward the
-                    theoretical side of cybersecurity — exploring the algorithms that protect
-                    information, the assumptions behind secure systems, and how those systems can
-                    be broken.
-                </div>
+                I'm a sophomore at the University of Wisconsin–Madison, double majoring
+                in <strong>Computer Science and Mathematics</strong>. I believe that truly
+                understanding a field means looking beyond how things work and digging into the
+                principles that make them possible. For me, mathematics provides that foundation
+                in computer science. This curiosity draws me toward the theoretical side of
+                cybersecurity — exploring the algorithms that protect information, the assumptions
+                behind secure systems, and how those systems can be broken.
             </div>
 
             <div className="sky-strip" aria-hidden="true">
