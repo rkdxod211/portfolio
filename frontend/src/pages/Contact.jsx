@@ -26,10 +26,6 @@ export default function Contact({ database, onBackToTop }) {
             <h1>CONTACT</h1>
 
             <h2 className="contact-headline">Let's connect.</h2>
-            <div className="contact-lede">
-                I'm currently open to research and internship opportunities.
-                Have a question, an idea, or just want to chat? I'd love to hear from you.
-            </div>
 
             {emails.length > 0 && (
                 <div className="contact-list">

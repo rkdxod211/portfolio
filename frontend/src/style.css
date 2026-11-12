@@ -485,13 +485,6 @@ p {
     margin: 0 0 12px;
 }
 
-.contact-lede {
-    font-size: 20px;
-    color: rgba(255, 255, 255, 0.85);
-    max-width: 640px;
-    line-height: 1.5;
-}
-
 /* Emails: one full-width card each. Links: two per row below. */
 .contact-list {
     display: flex;
@@ -507,7 +500,7 @@ p {
     margin-top: 16px;
 }
 
-.contact-lede + .contact-grid {
+.contact-headline + .contact-grid {
     margin-top: 40px; /* no emails above */
 }
 
