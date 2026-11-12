@@ -37,15 +37,15 @@ export default function About({ database }) {
                 </p>
             </div>
             <h2>TOOLS</h2>
-            <div className="experience-box">
+            <div className="tool-grid">
                 {TOOL_CATEGORIES.map(({ key, label }) => {
                     const items = splitList(tools[key]);
                     if (items.length === 0) return null;
                     return (
-                        <div key={key} className="tool-row">
+                        <div key={key} className="tool-card">
                             <div className="tool-category">{label}</div>
                             <div className="tag-list">
-                                {items.map(item => <span key={item} className="tag">{item}</span>)}
+                                {items.map(item => <span key={item} className="tool-chip">{item}</span>)}
                             </div>
                         </div>
                     );
