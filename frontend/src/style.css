@@ -474,46 +474,172 @@ p {
     transform: translateY(-3px);
 }
 
-.contact-link {
-    display: block;
+/* Contact */
+.contact-page {
+    padding-bottom: 90px; /* room for the footer */
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
     color: white;
-    font-size: 50px;
-    font-weight: 700;
-    text-decoration: none;
-    margin: 20px 0;
-    animation: blink 1.5s infinite;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4caf50;
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6);
+    animation: status-pulse 2s infinite;
+}
+
+@keyframes status-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6); }
+    70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+
+.contact-headline {
+    font-size: 56px;
+    color: white;
+    margin: 24px 0 8px;
+}
+
+.contact-lede {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 640px;
+    line-height: 1.5;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 40px;
+}
+
+.contact-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    padding: 18px 20px;
     transition: all 0.3s;
 }
 
-.contact-link:hover {
-    color: #0479AF;
+.contact-card:hover {
+    background: rgba(4, 121, 175, 0.3);
+    transform: translateY(-4px);
+}
+
+.contact-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: white;
+    text-decoration: none;
+}
+
+.contact-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #0479AF;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.contact-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.contact-value {
+    font-size: 18px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.contact-action {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button.contact-action:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.site-footer {
+    position: absolute;
+    left: 50px;
+    right: 50px;
+    bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.back-to-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.back-to-top:hover {
+    color: white;
     text-decoration: underline;
 }
-
-@keyframes blink {
-    0%, 50%, 100% { 
-        opacity: 1; 
-    }
-    25%, 75% { 
-        opacity: 0.5; 
-    }
-}
-
-.email {
-    font-size: 50px;
-    color: white;
-}
-
-.emailAddress {
-    font-size: 40px;
-    color: #0479AF;
-    margin-bottom: 50px;;
-}
-
-/* Add these styles to your existing style.css file */
-
-/* Guestbook Form Section */
-
 
 .admin-button {
     position: absolute;

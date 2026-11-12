@@ -497,7 +497,7 @@ export default function Admin({ database, assets, onAssetsChange, onUpdateDataba
                         </table>
                     </div>
                     <p style={{ fontSize: '14px', marginTop: '10px', color: '#1d3557' }}>
-                        Emails are listed under "EMAIL:" on the site; links become buttons showing their label.
+                        Each entry becomes a card on the site. Emails get a copy button; links show their label and open in a new tab.
                     </p>
                 </div>
             </div>

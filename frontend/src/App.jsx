@@ -274,12 +274,7 @@ export default function App() {
                         )}
                     </div>
                     <div className="page-section">
-                        <Contact database={database} />
-                        {currentPage === 5 && (
-                            <div className="scroll-indicator" onClick={scrollToNext}>
-                                <span style={{ fontSize: '48px' }}>⌄</span>
-                            </div>
-                        )}
+                        <Contact database={database} onBackToTop={() => scrollToPage(0)} />
                     </div>
                 </div>
             </div>
