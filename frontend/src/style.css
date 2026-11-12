@@ -1747,12 +1747,9 @@ button.contact-action:hover {
     fill: var(--accent);
 }
 
-.wb-text.muted {
-    fill: var(--muted);
-    font-weight: 500;
-}
-
-.wb-ink path {
+.wb-ink path,
+.wb-ink circle,
+.wb-ink line {
     fill: none;
     stroke: var(--accent);
     stroke-width: 2.6;
@@ -1765,10 +1762,10 @@ button.contact-action:hover {
     stroke: none;
 }
 
-/* A soft highlighter swipe drawn under a line of text */
-.wb-ink .wb-highlight {
-    stroke: #d6eaf8;
-    stroke-width: 22;
+.wb-ink .wb-node {
+    fill: white;
+    stroke: var(--accent);
+    stroke-width: 2.6;
 }
 
 .wb-ink .wb-dashed {
