@@ -26,6 +26,9 @@ export default function Contact({ database, onBackToTop }) {
             <h1>CONTACT</h1>
 
             <h2 className="contact-headline">Let's connect.</h2>
+            <div className="contact-lede">
+                Always happy to talk about research, projects, or new opportunities.
+            </div>
 
             {emails.length > 0 && (
                 <div className="contact-list">
