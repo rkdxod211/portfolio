@@ -85,17 +85,18 @@ button, input, textarea, select {
 h1 {
     font-family: "Exo 2", sans-serif;
     font-weight: 900;
-    font-size: 100px;
-    margin-top: 4.5%;
-    margin-bottom: 30px;
+    font-size: clamp(44px, 4.6vw, 64px); /* below the home headline (84px) */
+    margin-top: 32px;
+    margin-bottom: 28px;
     color: var(--ink);
 }
 
 h2 {
     font-family: "Exo 2", sans-serif;
-    font-weight: 700;
-    font-size: 50px;
-    margin-bottom: 20px;
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: 0.5px;
+    margin-bottom: 0;
     color: var(--ink);
 }
 
@@ -374,7 +375,7 @@ p {
     border: 1px solid var(--line);
     border-radius: 10px;
     padding: 30px;
-    margin: 30px 0;
+    margin: 16px 0 40px;
     font-size: 20px;
     box-shadow: 0 1px 2px rgba(29, 53, 87, 0.04);
 }
@@ -426,7 +427,7 @@ p {
 }
 
 .contact-headline {
-    font-size: 56px;
+    font-size: 36px;
     color: var(--ink);
     margin: 0 0 12px;
 }
@@ -965,7 +966,7 @@ button.contact-action:hover {
 }
 
 .project-detail-header h1 {
-    font-size: 80px;
+    font-size: clamp(40px, 4vw, 56px);
     color: var(--ink);
     margin-bottom: 20px;
 }
@@ -1357,7 +1358,7 @@ button.contact-action:hover {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
-    margin: 30px 0 100px;
+    margin: 16px 0 100px;
 }
 
 .tool-card {
