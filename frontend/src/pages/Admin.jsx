@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Edit2, Save, X, LogOut } from 'lucide-react';
 import ProjectVisibility from '../components/ProjectVisibility';
+import SiteAssets from '../components/SiteAssets';
 import { adminFetch } from '../adminApi';
 
-export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSite }) {
+export default function Admin({ database, assets, onAssetsChange, onUpdateDatabase, onLogout, onBackToSite }) {
     const [editMode, setEditMode] = useState({});
     const [editedData, setEditedData] = useState(database);
 
@@ -150,6 +151,8 @@ export default function Admin({ database, onUpdateDatabase, onLogout, onBackToSi
                     </button>
                 </div>
             </div>
+
+            <SiteAssets assets={assets} onAssetsChange={onAssetsChange} />
 
             {/* About Section */}
             <div className="admin-section">

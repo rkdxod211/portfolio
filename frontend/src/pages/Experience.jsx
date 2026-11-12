@@ -1,12 +1,15 @@
 import React from 'react';
 import { Download } from 'lucide-react';
+import { RESUME_FILENAME } from '../siteAssets';
 
-export default function Experience({ database }) {
+export default function Experience({ database, resumeUrl }) {
     const handleResumeDownload = () => {
-        const resumePath = './files/Taeyoung_Kang_Resume.pdf';
+        // `download` is ignored for cross-origin links, so ask Supabase Storage
+        // to send it as an attachment with the right name instead.
+        const isRemote = /^https?:\/\//.test(resumeUrl);
         const link = document.createElement('a');
-        link.href = resumePath;
-        link.download = 'Taeyoung_Kang_Resume.pdf';
+        link.href = isRemote ? `${resumeUrl}?download=${encodeURIComponent(RESUME_FILENAME)}` : resumeUrl;
+        link.download = RESUME_FILENAME;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

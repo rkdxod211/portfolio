@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Admin from './pages/Admin';
 import './style.css';
 import { getToken, setToken } from './adminApi';
+import { fetchAssets, resolveAssets } from './siteAssets';
 
 const initialDatabase = {
     about: {
@@ -31,8 +32,18 @@ export default function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(getToken()));
     const [database, setDatabase] = useState(initialDatabase);
     const [loading, setLoading] = useState(true);
+    const [assets, setAssets] = useState(null); // server values { key: url | null }; null until loaded
+    const siteAssets = resolveAssets(assets || {});
     const scrollContainerRef = useRef(null);
     const pages = ['home', 'about', 'projects', 'experience', 'contact'];
+
+    useEffect(() => {
+        fetchAssets().then(setAssets);
+    }, []);
+
+    useEffect(() => {
+        if (assets) document.body.style.backgroundImage = `url("${siteAssets.background}")`;
+    }, [assets, siteAssets.background]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -168,7 +179,7 @@ export default function App() {
         setDatabase(newData);
     };
 
-    if (loading) {
+    if (loading || !assets) {
         return (
             <div style={{
                 display: 'flex',
@@ -191,6 +202,8 @@ export default function App() {
         return (
             <Admin 
                 database={database} 
+                assets={assets}
+                onAssetsChange={setAssets}
                 onUpdateDatabase={handleUpdateDatabase}
                 onLogout={handleLogout}
                 onBackToSite={handleBackToSite}
@@ -205,6 +218,7 @@ export default function App() {
                 scrollToPage={scrollToPage}
                 pages={pages}
                 onAdminClick={handleAdminClick}
+                profileSrc={siteAssets.profile}
             />
             <div className="main-content">
                 <div className="scroll-container" ref={scrollContainerRef}>
@@ -233,7 +247,7 @@ export default function App() {
                         )}
                     </div>
                     <div className="page-section">
-                        <Experience database={database} />
+                        <Experience database={database} resumeUrl={siteAssets.resume} />
                         {currentPage === 3 && (
                             <div className="scroll-indicator" onClick={scrollToNext}>
                                 <span style={{ fontSize: '48px' }}>⌄</span>

@@ -117,3 +117,15 @@ alter table visitor_stats enable row level security;
 alter table admin enable row level security;
 alter table project_stats enable row level security;
 alter table contact_items enable row level security;
+
+-- Replaceable site images/files (see add-site-assets.sql for the storage bucket).
+create table if not exists site_assets (
+    key text primary key check (key in ('profile', 'background', 'resume')),
+    path text not null,
+    url text not null,
+    updated_at timestamptz not null default now()
+);
+alter table site_assets enable row level security;
+insert into storage.buckets (id, name, public)
+values ('site-assets', 'site-assets', true)
+on conflict (id) do update set public = true;
