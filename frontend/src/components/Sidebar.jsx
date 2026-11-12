@@ -9,7 +9,9 @@ export default function Sidebar({ currentPage, scrollToPage, pages, onAdminClick
                 <Lock size={16} />
                 Admin
             </button>
-            <img src={profileSrc} alt="Profile" className="profile-img" />
+            {profileSrc
+                ? <img src={profileSrc} alt="Profile" className="profile-img" />
+                : <div className="profile-img profile-placeholder" aria-hidden="true" />}
             <nav>
                 {pages.map((page, index) => (
                     <div

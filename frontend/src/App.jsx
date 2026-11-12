@@ -9,7 +9,7 @@ import Login from './pages/Login';
 import Admin from './pages/Admin';
 import './style.css';
 import { getToken, setToken } from './adminApi';
-import { fetchAssets, resolveAssets } from './siteAssets';
+import { fetchAssets } from './siteAssets';
 
 const initialDatabase = {
     about: {
@@ -33,17 +33,12 @@ export default function App() {
     const [database, setDatabase] = useState(initialDatabase);
     const [loading, setLoading] = useState(true);
     const [assets, setAssets] = useState(null); // server values { key: url | null }; null until loaded
-    const siteAssets = resolveAssets(assets || {});
     const scrollContainerRef = useRef(null);
     const pages = ['home', 'about', 'projects', 'experience', 'contact'];
 
     useEffect(() => {
         fetchAssets().then(setAssets);
     }, []);
-
-    useEffect(() => {
-        if (assets) document.body.style.backgroundImage = `url("${siteAssets.background}")`;
-    }, [assets, siteAssets.background]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -218,7 +213,7 @@ export default function App() {
                 scrollToPage={scrollToPage}
                 pages={pages}
                 onAdminClick={handleAdminClick}
-                profileSrc={siteAssets.profile}
+                profileSrc={assets.profile || null}
             />
             <div className="main-content">
                 <div className="scroll-container" ref={scrollContainerRef}>
@@ -247,7 +242,7 @@ export default function App() {
                         )}
                     </div>
                     <div className="page-section">
-                        <Experience database={database} resumeUrl={siteAssets.resume} />
+                        <Experience database={database} resumeUrl={assets.resume || null} />
                         {currentPage === 3 && (
                             <div className="scroll-indicator" onClick={scrollToNext}>
                                 <span style={{ fontSize: '48px' }}>⌄</span>

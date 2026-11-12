@@ -6,9 +6,8 @@ export default function Experience({ database, resumeUrl }) {
     const handleResumeDownload = () => {
         // `download` is ignored for cross-origin links, so ask Supabase Storage
         // to send it as an attachment with the right name instead.
-        const isRemote = /^https?:\/\//.test(resumeUrl);
         const link = document.createElement('a');
-        link.href = isRemote ? `${resumeUrl}?download=${encodeURIComponent(RESUME_FILENAME)}` : resumeUrl;
+        link.href = `${resumeUrl}?download=${encodeURIComponent(RESUME_FILENAME)}`;
         link.download = RESUME_FILENAME;
         document.body.appendChild(link);
         link.click();
@@ -42,10 +41,12 @@ export default function Experience({ database, resumeUrl }) {
                     </div>
                 ))}
             </div>
-            <button className="resume-download" onClick={handleResumeDownload}>
-                <Download size={24} />
-                Download Full Resume
-            </button>
+            {resumeUrl && (
+                <button className="resume-download" onClick={handleResumeDownload}>
+                    <Download size={24} />
+                    Download Full Resume
+                </button>
+            )}
         </div>
     );
 }

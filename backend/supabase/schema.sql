@@ -118,9 +118,9 @@ alter table admin enable row level security;
 alter table project_stats enable row level security;
 alter table contact_items enable row level security;
 
--- Replaceable site images/files (see add-site-assets.sql for the storage bucket).
+-- Replaceable site files (profile photo, resume) (see add-site-assets.sql for the storage bucket).
 create table if not exists site_assets (
-    key text primary key check (key in ('profile', 'background', 'resume')),
+    key text primary key check (key in ('profile', 'resume')),
     path text not null,
     url text not null,
     updated_at timestamptz not null default now()

@@ -7,7 +7,7 @@
 }
 
 body {
-    /* background-image is set from App.jsx (admin-replaceable, default /images/bg.png) */
+    background-image: url('../public/images/bg.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -114,6 +114,11 @@ p {
     object-fit: cover;
     margin-bottom: 30px;
     border: 3px solid #CCC;
+}
+
+.profile-placeholder {
+    display: block;
+    background: #e9edf2;
 }
 
 .sidebar nav {
@@ -1226,7 +1231,8 @@ p {
     object-fit: cover;
 }
 
-.asset-preview-profile img {
+.asset-preview-profile img,
+.asset-preview-profile .profile-placeholder {
     width: 160px;
     height: 160px;
     border-radius: 50%;
@@ -1258,4 +1264,9 @@ p {
 .asset-actions button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+.asset-empty {
+    color: #6b7a8c;
+    font-size: 14px;
 }

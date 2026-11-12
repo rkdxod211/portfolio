@@ -9,7 +9,6 @@ const BUCKET = 'site-assets';
 const IMAGE_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
 const SLOTS = {
     profile: IMAGE_TYPES,
-    background: IMAGE_TYPES,
     resume: { 'application/pdf': 'pdf' }
 };
 
@@ -31,7 +30,7 @@ const handle = (fn) => async (req, res) => {
 
 const fail = (status, message) => Object.assign(new Error(message), { status });
 
-// { profile: url | null, background: url | null, resume: url | null }
+// { profile: url | null, resume: url | null }
 router.get('/', handle(async (req, res) => {
     const rows = check(await supabase.from('site_assets').select('key, url'));
     const result = Object.fromEntries(Object.keys(SLOTS).map(k => [k, null]));
@@ -65,7 +64,7 @@ router.put('/:key', requireAdmin, express.raw({ type: () => true, limit: MAX_BYT
     res.json({ key, url: publicUrl });
 }));
 
-// Go back to the bundled default file.
+// Remove the upload: grey placeholder for the profile, no resume.
 router.delete('/:key', requireAdmin, handle(async (req, res) => {
     const { key } = req.params;
     if (!SLOTS[key]) throw fail(404, `Unknown asset "${key}"`);
