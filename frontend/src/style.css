@@ -479,38 +479,10 @@ p {
     padding-bottom: 90px; /* room for the footer */
 }
 
-.status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 18px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1.5px solid rgba(255, 255, 255, 0.6);
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.status-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #4caf50;
-    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6);
-    animation: status-pulse 2s infinite;
-}
-
-@keyframes status-pulse {
-    0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6); }
-    70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
-}
-
 .contact-headline {
     font-size: 56px;
     color: white;
-    margin: 24px 0 8px;
+    margin: 0 0 12px;
 }
 
 .contact-lede {
@@ -520,11 +492,29 @@ p {
     line-height: 1.5;
 }
 
-.contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+/* Emails: one full-width card each. Links: two per row below. */
+.contact-list {
+    display: flex;
+    flex-direction: column;
     gap: 16px;
     margin-top: 40px;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.contact-lede + .contact-grid {
+    margin-top: 40px; /* no emails above */
+}
+
+@media (max-width: 900px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .contact-card {
@@ -584,9 +574,7 @@ p {
 .contact-value {
     font-size: 18px;
     font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere; /* wrap long addresses instead of cutting them off */
 }
 
 .contact-action {

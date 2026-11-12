@@ -18,25 +18,29 @@ function iconFor(item) {
 
 export default function Contact({ database, onBackToTop }) {
     const items = Array.isArray(database.contact) ? database.contact : [];
+    const emails = items.filter(i => i.type === 'email');
+    const links = items.filter(i => i.type !== 'email');
 
     return (
         <div className="contact-page">
             <h1>CONTACT</h1>
 
-            <div className="status-pill">
-                <span className="status-dot" aria-hidden="true" />
-                Open to research &amp; internship opportunities
-            </div>
             <h2 className="contact-headline">Let's connect.</h2>
             <div className="contact-lede">
-                Have a question, an idea, or an opportunity in mind? I'd love to hear from you.
+                I'm currently open to research and internship opportunities.
+                Have a question, an idea, or just want to chat? I'd love to hear from you.
             </div>
 
-            <div className="contact-grid">
-                {items.map((item, index) => (
-                    <ContactCard key={item.id || index} item={item} />
-                ))}
-            </div>
+            {emails.length > 0 && (
+                <div className="contact-list">
+                    {emails.map((item, index) => <ContactCard key={item.id || index} item={item} />)}
+                </div>
+            )}
+            {links.length > 0 && (
+                <div className="contact-grid">
+                    {links.map((item, index) => <ContactCard key={item.id || index} item={item} />)}
+                </div>
+            )}
 
             <footer className="site-footer">
                 <span>© {new Date().getFullYear()} {OWNER}. All rights reserved.</span>
