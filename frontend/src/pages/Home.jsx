@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const TWINKLES = [
     { x: 9, y: 30, d: 0, s: 10 },
@@ -36,13 +36,43 @@ function CloudBuddy() {
     );
 }
 
+// Types `text`, holds, deletes it one character at a time, pauses, and repeats.
+function TypeLoop({ text, typeMs = 180, deleteMs = 110, holdMs = 2600, emptyMs = 700 }) {
+    const [count, setCount] = useState(0);
+    const [deleting, setDeleting] = useState(false);
+
+    useEffect(() => {
+        if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+            setCount(text.length);
+            return undefined;
+        }
+        let delay;
+        if (!deleting && count === text.length) delay = holdMs;
+        else if (deleting && count === 0) delay = emptyMs;
+        else delay = deleting ? deleteMs : typeMs;
+
+        const timer = setTimeout(() => {
+            if (!deleting && count === text.length) setDeleting(true);
+            else if (deleting && count === 0) setDeleting(false);
+            else setCount(c => c + (deleting ? -1 : 1));
+        }, delay);
+        return () => clearTimeout(timer);
+    }, [count, deleting, text, typeMs, deleteMs, holdMs, emptyMs]);
+
+    return (
+        <span className="hero-why" aria-label={text}>
+            <span aria-hidden="true">{text.slice(0, count)}</span>
+        </span>
+    );
+}
+
 export default function Home() {
     return (
         <div className="home-page">
             <div className="hero-eyebrow">I'm Taeyoung Kang</div>
             <h1 className="hero-title">
                 I Like to Start <br />
-                with <span className="type hero-why" style={{ '--n': 5 }}>Why.</span>
+                with <TypeLoop text="Why." />
             </h1>
 
             <div className="hero-tagline">

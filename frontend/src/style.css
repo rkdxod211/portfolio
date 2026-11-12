@@ -171,30 +171,6 @@ p {
 }
 
 /* Typing Effect */
-.type {
-    font-family: "Exo 2", sans-serif;
-    font-size: 45px;
-    color: #0000;
-    background:
-        linear-gradient(-90deg, #0479AF 5px, #0000 0) 10px 0,
-        linear-gradient(#0479AF 0 0) 0 0;
-    background-size: calc(var(--n)*1ch) 200%;
-    -webkit-background-clip: padding-box, text;
-    background-clip: padding-box, text;
-    background-repeat: no-repeat;
-    animation: 
-        b .7s infinite steps(1),   
-        t calc(var(--n)*.15s) steps(var(--n)) forwards;
-}
-
-@keyframes t {
-    from { background-size: 0 200%; }
-}
-
-@keyframes b {
-    50% { background-position: 0 -100%, 0 0; }
-}
-
 /* Home: hero. Sized with vh so the text and the cloud strip fit on one screen. */
 .home-page {
     /* The 150px cloud strip sits at the section's bottom edge, overlapping the
@@ -211,7 +187,7 @@ p {
     font-weight: 800;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: #0479AF;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .hero-eyebrow::before {
@@ -228,10 +204,9 @@ p {
     color: white;
 }
 
-/* The typing effect, scaled to the headline */
+/* "Why." typed and deleted in a loop (see TypeLoop in Home.jsx) */
 .hero-why {
-    font-size: inherit;
-    font-weight: 900;
+    color: #0479AF;
 }
 
 /* Blinking caret after "Why." */
