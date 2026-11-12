@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Sidebar from './components/Sidebar';
+import TopNav from './components/TopNav';
 import Home from './pages/Home';
 import About from './pages/About';
 import Projects from './pages/Projects';
@@ -221,7 +221,7 @@ export default function App() {
 
     return (
         <div className="app-container">
-            <Sidebar 
+            <TopNav 
                 currentPage={currentPage} 
                 scrollToPage={scrollToPage}
                 pages={pages}

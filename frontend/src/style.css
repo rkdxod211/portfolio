@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&family=Caveat:wght@500;700&display=swap');
 
 * {
     margin: 0;
@@ -26,14 +26,14 @@ button, input, textarea, select {
     min-height: 100vh;
 }
 
-/* Sidebar width; the main column takes the rest. */
+/* Top nav height, and side padding that keeps content at most 1240px wide. */
 :root {
-    --sidebar-w: 25%;
+    --nav-h: 72px;
+    --side-pad: max(50px, calc((100vw - 1240px) / 2));
 }
 
 .main-content {
-    margin-left: var(--sidebar-w);
-    width: calc(100% - var(--sidebar-w));
+    width: 100%;
     position: relative;
 }
 
@@ -46,7 +46,7 @@ button, input, textarea, select {
 
 .page-section {
     min-height: 100vh;
-    padding: 50px;
+    padding: calc(var(--nav-h) + 10px) var(--side-pad) 50px;
     position: relative;
     scroll-snap-align: start;
 }
@@ -103,61 +103,9 @@ p {
     line-height: 1.5;
 }
 
-.sidebar {
-    width: var(--sidebar-w);
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    background-color: #daeaf699;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 75px;
-    z-index: 100;
-}
-
-.profile-img {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 30px;
-    border: 3px solid #CCC;
-}
-
 .profile-placeholder {
     display: block;
     background: #e9edf2;
-}
-
-.sidebar nav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.nav-link {
-    padding: 16px; /* six sections must fit under the photo */
-    font-size: 24px;
-    font-weight: 600;
-    text-decoration: none;
-    color: black;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.nav-link:hover {
-    text-decoration: underline;
-    color: aliceblue;
-    transform: scale(1.3);
-}
-
-.nav-link.active {
-    color: #0479AF;
-    font-weight: 800;
-    text-decoration: underline;
 }
 
 .visitorCount {
@@ -173,10 +121,10 @@ p {
 /* Typing Effect */
 /* Home: hero. Sized with vh so the text and the cloud strip fit on one screen. */
 .home-page {
-    /* Fill the screen (minus the section's 50px top/bottom padding) and center
-       the text in the space above the cloud strip. The 150px strip sits at the
+    /* Fill the screen (minus the section's top/bottom padding) and center the
+       hero in the space above the cloud strip. The 150px strip sits at the
        section's bottom edge over its 50px padding, so 100px more keeps it clear. */
-    min-height: calc(100vh - 100px);
+    min-height: calc(100vh - var(--nav-h) - 60px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -202,7 +150,7 @@ p {
 }
 
 .hero-title {
-    font-size: clamp(44px, min(6vw, 9.5vh), 88px);
+    font-size: clamp(44px, min(5vw, 9vh), 84px);
     line-height: 1.05;
     margin: 1.5vh 0 3vh;
     color: white;
@@ -671,8 +619,8 @@ button.contact-action:hover {
 
 .site-footer {
     position: absolute;
-    left: 50px;
-    right: 50px;
+    left: var(--side-pad);
+    right: var(--side-pad);
     bottom: 30px;
     display: flex;
     justify-content: space-between;
@@ -702,30 +650,8 @@ button.contact-action:hover {
     text-decoration: underline;
 }
 
-.admin-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 15px;
-    background: #0479AF;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'Exo 2', sans-serif;
-    transition: all 0.3s;
-}
-
-.admin-button:hover {
-    transform: scale(1.05);
-}
-
 /* Login Page Styles */
+
 .login-container {
     min-height: 100vh;
     display: flex;
@@ -1080,7 +1006,6 @@ button.contact-action:hover {
     font-family: 'Exo 2', sans-serif;
 }
 
-
 .back-to-list-btn {
     display: inline-flex;
     align-items: center;
@@ -1274,7 +1199,6 @@ button.contact-action:hover {
         justify-content: center;
     }
 }
-
 
 .category-header-row {
     display: flex;
@@ -1665,4 +1589,297 @@ button.contact-action:hover {
 
 .research-edit-field .admin-label {
     margin-bottom: 4px;
+}
+
+/* Top navigation bar */
+.topnav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-h);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 0 var(--side-pad);
+    background: rgba(218, 234, 246, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.topnav-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.topnav-photo {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+.topnav-name {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #1d3557;
+}
+
+.topnav-links {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.topnav-link {
+    position: relative;
+    padding: 10px 14px;
+    background: none;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #1d3557;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.topnav-link::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 2px;
+    height: 3px;
+    border-radius: 2px;
+    background: #0479AF;
+    transform: scaleX(0);
+    transition: transform 0.25s;
+}
+
+.topnav-link:hover {
+    color: #0479AF;
+}
+
+.topnav-link.active {
+    color: #0479AF;
+}
+
+.topnav-link.active::after {
+    transform: scaleX(1);
+}
+
+.topnav-admin {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #0479AF;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.topnav-admin:hover {
+    background: #035a80;
+}
+
+@media (max-width: 900px) {
+    .topnav-name {
+        display: none;
+    }
+
+    .topnav-links {
+        justify-content: flex-start;
+    }
+}
+
+/* Home: text on the left, chalkboard on the right */
+.hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 56px;
+    align-items: center;
+}
+
+@media (max-width: 1000px) {
+    .hero-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chalkboard {
+        max-width: 520px;
+    }
+}
+
+/* Chalkboard */
+.chalkboard {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    justify-self: center;
+    padding: 12px 12px 0;
+    border-radius: 16px;
+    background: #8a5a32;
+    box-shadow: 0 18px 40px rgba(4, 50, 86, 0.25), inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+
+.chalkboard-svg {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 8px;
+    background:
+        radial-gradient(ellipse at 22% 30%, rgba(255, 255, 255, 0.06), transparent 45%),
+        radial-gradient(ellipse at 75% 70%, rgba(255, 255, 255, 0.05), transparent 40%),
+        radial-gradient(ellipse at 60% 15%, rgba(255, 255, 255, 0.04), transparent 35%),
+        #2a3b36;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.45);
+}
+
+.chalk-tray {
+    position: relative;
+    height: 16px;
+    margin: 0 -12px;
+    border-radius: 0 0 16px 16px;
+    background: #73492a;
+}
+
+.chalk-stick {
+    position: absolute;
+    left: 22%;
+    top: 3px;
+    width: 34px;
+    height: 7px;
+    border-radius: 3px;
+    background: #f4f1ea;
+}
+
+.chalk-eraser {
+    position: absolute;
+    right: 18%;
+    top: -2px;
+    width: 58px;
+    height: 13px;
+    border-radius: 3px;
+    background: linear-gradient(#3a3f45 0 45%, #d8cfc0 45%);
+}
+
+.chalk-text {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    fill: rgba(255, 255, 255, 0.9);
+}
+
+.chalk-ink path,
+.chalk-ink circle,
+.chalk-ink line {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.88);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.chalk-ink .chalk-dot,
+.chalk-ink .chalk-node {
+    fill: rgba(255, 255, 255, 0.9);
+    stroke: none;
+}
+
+.chalk-ink .chalk-node {
+    fill: #2a3b36;
+    stroke: rgba(255, 255, 255, 0.88);
+    stroke-width: 3;
+}
+
+.chalk-ink .chalk-dashed {
+    stroke-dasharray: 5 7;
+    opacity: 0.6;
+}
+
+/* Each cycle: draw, hold, then wipe the board */
+.chalk-ink {
+    animation: chalk-erase var(--cycle) linear forwards;
+}
+
+@keyframes chalk-erase {
+    0%, 90% { opacity: 1; }
+    96%, 100% { opacity: 0; }
+}
+
+.chalk-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: chalk-draw var(--t) ease-out var(--d) forwards;
+}
+
+@keyframes chalk-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+/* Letters fade in one by one (tspans only support fill-opacity, not opacity) */
+.chalk-char {
+    fill-opacity: 0;
+    animation: chalk-char-in 0.18s linear var(--d) forwards;
+}
+
+@keyframes chalk-char-in {
+    to { fill-opacity: 1; }
+}
+
+.chalk-fade {
+    opacity: 0;
+    animation: chalk-in 0.18s linear var(--d) forwards;
+}
+
+.chalk-ink .chalk-dashed.chalk-fade {
+    opacity: 0;
+    animation-name: chalk-in-dashed;
+}
+
+@keyframes chalk-in {
+    to { opacity: 1; }
+}
+
+@keyframes chalk-in-dashed {
+    to { opacity: 0.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chalk-ink,
+    .chalk-draw,
+    .chalk-fade {
+        animation: none;
+        opacity: 1;
+        stroke-dashoffset: 0;
+    }
+
+    .chalk-char {
+        animation: none;
+        fill-opacity: 1;
+    }
+
+    .chalk-ink .chalk-dashed.chalk-fade {
+        opacity: 0.6;
+    }
 }

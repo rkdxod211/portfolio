@@ -1,0 +1,133 @@
+import React, { useEffect, useState } from 'react';
+
+// A blackboard whose chalk doodles draw themselves, stay for a while, get
+// erased, and start over. Timings below are seconds from the start of a cycle.
+const CYCLE_MS = 19000;
+
+const reducedMotion = () =>
+    typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+// A stroke that draws itself from start to end.
+// `at`: when it starts drawing; `t`: how long the drawing takes.
+const Stroke = ({ as: Tag = 'path', at, t, ...props }) => (
+    <Tag
+        className="chalk-draw"
+        pathLength="1"
+        style={{ '--d': `${at}s`, '--t': `${t}s` }}
+        {...props}
+    />
+);
+
+// Handwritten text, one character at a time. `parts` is a list of strings,
+// or { sup: 'e' } for a superscript.
+function ChalkText({ x, y, size, start, step = 0.1, parts }) {
+    let i = 0;
+    const spans = [];
+    let lift = 0; // undo a superscript's raise on the next character
+    parts.forEach((part, p) => {
+        const isSup = typeof part === 'object';
+        const chars = Array.from(isSup ? part.sup : part);
+        chars.forEach((ch, c) => {
+            const dy = isSup && c === 0 ? -size * 0.4 : (!isSup && lift ? lift : undefined);
+            if (!isSup && lift) lift = 0;
+            spans.push(
+                <tspan
+                    key={`${p}-${c}`}
+                    className="chalk-char"
+                    dy={dy}
+                    fontSize={isSup ? size * 0.6 : undefined}
+                    style={{ '--d': `${start + i * step}s` }}
+                >
+                    {ch}
+                </tspan>
+            );
+            i += 1;
+        });
+        if (isSup) lift = size * 0.4;
+    });
+    return <text x={x} y={y} fontSize={size} className="chalk-text">{spans}</text>;
+}
+
+function Doodles() {
+    return (
+        <g className="chalk-ink" style={{ '--cycle': `${CYCLE_MS}ms` }} filter="url(#chalk-texture)">
+            {/* "Why?" with a loose circle and an arrow toward the sphere */}
+            <ChalkText x={42} y={98} size={72} start={0.2} step={0.22} parts={['Why?']} />
+            <Stroke at={1.2} t={0.8}
+                d="M200 62 C 196 28, 120 18, 72 30 C 26 42, 18 96, 64 112 C 110 128, 190 118, 206 82 C 212 66, 200 52, 186 46" />
+            <Stroke at={2.1} t={0.6} d="M214 92 C 252 112, 292 120, 338 116" />
+            <Stroke at={2.7} t={0.25} d="M322 104 L 340 116 L 322 128" />
+
+            {/* Bloch sphere: a qubit */}
+            <Stroke as="circle" at={3.0} t={0.9} cx={440} cy={130} r={72} />
+            <Stroke as="path" at={3.9} t={0.5} d="M368 130 C 380 152, 500 152, 512 130" />
+            <path className="chalk-fade chalk-dashed" style={{ '--d': '4.3s' }} d="M368 130 C 380 108, 500 108, 512 130" />
+            <Stroke as="line" at={4.5} t={0.35} x1={440} y1={130} x2={440} y2={50} />
+            <Stroke as="line" at={4.9} t={0.4} x1={440} y1={130} x2={486} y2={88} />
+            <circle className="chalk-fade chalk-dot" style={{ '--d': '5.3s' }} cx={486} cy={88} r={4.5} />
+            <ChalkText x={448} y={46} size={26} start={5.4} step={0.08} parts={['|0⟩']} />
+            <ChalkText x={448} y={232} size={26} start={5.7} step={0.08} parts={['|1⟩']} />
+            <ChalkText x={492} y={82} size={24} start={6.0} step={0.08} parts={['ψ']} />
+
+            {/* Qubit state */}
+            <ChalkText x={42} y={206} size={38} start={6.3} step={0.09} parts={['|ψ⟩ = α|0⟩ + β|1⟩']} />
+
+            {/* RSA */}
+            <ChalkText x={42} y={272} size={38} start={8.0} step={0.09} parts={['c ≡ m', { sup: 'e' }, ' (mod n)']} />
+            <Stroke at={9.4} t={0.6} d="M40 288 C 80 280, 120 296, 160 288 S 240 280, 290 290" />
+
+            {/* P vs NP */}
+            <ChalkText x={42} y={360} size={38} start={10.1} step={0.1} parts={['P vs NP ?']} />
+
+            {/* Padlock */}
+            <Stroke at={11.2} t={0.5} d="M332 330 V 314 A 22 22 0 0 1 376 314 V 330" />
+            <Stroke at={11.6} t={0.6} d="M322 330 H 386 V 382 H 322 Z" />
+            <Stroke as="circle" at={12.1} t={0.3} cx={354} cy={350} r={6} />
+            <Stroke as="line" at={12.3} t={0.2} x1={354} y1={356} x2={354} y2={368} />
+
+            {/* A small graph */}
+            <Stroke as="line" at={12.6} t={0.3} x1={442} y1={312} x2={506} y2={300} />
+            <Stroke as="line" at={12.8} t={0.3} x1={442} y1={312} x2={466} y2={374} />
+            <Stroke as="line" at={13.0} t={0.3} x1={506} y1={300} x2={526} y2={362} />
+            <Stroke as="line" at={13.2} t={0.3} x1={466} y1={374} x2={526} y2={362} />
+            <Stroke as="line" at={13.4} t={0.3} x1={506} y1={300} x2={466} y2={374} />
+            {[[442, 312], [506, 300], [466, 374], [526, 362]].map(([cx, cy], k) => (
+                <circle key={k} className="chalk-fade chalk-node" style={{ '--d': `${13.7 + k * 0.12}s` }} cx={cx} cy={cy} r={7} />
+            ))}
+        </g>
+    );
+}
+
+export default function Chalkboard() {
+    const [cycle, setCycle] = useState(0);
+
+    useEffect(() => {
+        if (reducedMotion()) return undefined;
+        const timer = setInterval(() => setCycle(c => c + 1), CYCLE_MS);
+        return () => clearInterval(timer);
+    }, []);
+
+    return (
+        <div className="chalkboard" aria-hidden="true">
+            <svg viewBox="0 0 560 420" className="chalkboard-svg">
+                <defs>
+                    {/* Rough, grainy chalk edges */}
+                    <filter id="chalk-texture" x="-5%" y="-5%" width="110%" height="110%">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="noise" />
+                        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="rough" />
+                        <feTurbulence type="fractalNoise" baseFrequency="1.8" numOctaves="1" seed="2" result="grain" />
+                        <feColorMatrix in="grain" type="matrix"
+                            values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -1.4 1.45" result="grainMask" />
+                        <feComposite in="rough" in2="grainMask" operator="in" />
+                    </filter>
+                </defs>
+                {/* Remounting restarts every animation for the next cycle */}
+                <Doodles key={cycle} />
+            </svg>
+            <div className="chalk-tray">
+                <span className="chalk-stick" />
+                <span className="chalk-eraser" />
+            </div>
+        </div>
+    );
+}
