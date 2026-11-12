@@ -16,15 +16,20 @@ const check = ({ data, error }) => {
     return data;
 };
 
+// Tools categories shown under About; each value is a comma-separated list.
+const TOOL_KEYS = ['languages', 'frameworks', 'databases', 'devtools'];
+const pickTools = (tools = {}) =>
+    Object.fromEntries(TOOL_KEYS.map(k => [k, typeof tools[k] === 'string' ? tools[k].trim() : '']));
+
 router.get('/about', handle(async (req, res) => {
-    const data = check(await supabase.from('about').select('introduction, interests').eq('id', 1).maybeSingle());
+    const data = check(await supabase.from('about').select('interests, tools').eq('id', 1).maybeSingle());
     if (!data) return res.status(404).json({ error: 'About content not found' });
-    res.json(data);
+    res.json({ interests: data.interests || '', tools: pickTools(data.tools || {}) });
 }));
 
 router.put('/about', requireAdmin, handle(async (req, res) => {
-    const { introduction, interests } = req.body;
-    check(await supabase.from('about').upsert({ id: 1, introduction, interests }));
+    const { interests, tools } = req.body;
+    check(await supabase.from('about').upsert({ id: 1, interests, tools: pickTools(tools) }));
     res.json({ message: 'About content updated successfully' });
 }));
 
@@ -54,11 +59,13 @@ router.delete('/education/:id', requireAdmin, handle(async (req, res) => {
     res.json({ message: 'Education deleted successfully' });
 }));
 
+const ENTRY_FIELDS = 'id, title, detail, start_date, end_date';
+
 router.get('/experience', handle(async (req, res) => {
     const [lang, clubs, work] = await Promise.all([
         supabase.from('experience_languages').select('languages').eq('id', 1).maybeSingle(),
-        supabase.from('experience_clubs').select('id, title, detail').order('id'),
-        supabase.from('experience_work').select('id, title, detail').order('id')
+        supabase.from('experience_clubs').select(ENTRY_FIELDS).order('id'),
+        supabase.from('experience_work').select(ENTRY_FIELDS).order('id')
     ]);
     res.json({
         languages: check(lang)?.languages || '',
@@ -99,11 +106,37 @@ const syncRoute = (table, pick, isEmpty, select, order) => handle(async (req, re
     res.json(check(await supabase.from(table).select(select).order(order)));
 });
 
-const pickEntry = (i) => ({ title: (i.title || '').trim(), detail: (i.detail || '').trim() });
-const emptyEntry = (i) => !(i.title || '').trim() && !(i.detail || '').trim();
+const text = (v) => (typeof v === 'string' ? v.trim() : '');
 
-router.put('/experience/clubs', requireAdmin, syncRoute('experience_clubs', pickEntry, emptyEntry, 'id, title, detail', 'id'));
-router.put('/experience/work', requireAdmin, syncRoute('experience_work', pickEntry, emptyEntry, 'id, title, detail', 'id'));
+const pickEntry = (i) => ({
+    title: text(i.title),
+    detail: text(i.detail),
+    start_date: text(i.start_date),
+    end_date: text(i.end_date)
+});
+const emptyEntry = (i) => !text(i.title) && !text(i.detail);
+
+router.put('/experience/clubs', requireAdmin, syncRoute('experience_clubs', pickEntry, emptyEntry, ENTRY_FIELDS, 'id'));
+router.put('/experience/work', requireAdmin, syncRoute('experience_work', pickEntry, emptyEntry, ENTRY_FIELDS, 'id'));
+
+const RESEARCH_TEXT = ['title', 'role', 'lab', 'advisor', 'location', 'start_date', 'end_date',
+    'tags', 'question', 'description', 'outcomes', 'link'];
+const RESEARCH_FIELDS = ['id', ...RESEARCH_TEXT, 'display_order'].join(', ');
+
+router.get('/research', handle(async (req, res) => {
+    res.json(check(await supabase.from('research').select(RESEARCH_FIELDS).order('display_order')));
+}));
+
+router.put('/research', requireAdmin, syncRoute(
+    'research',
+    (i, index) => ({
+        ...Object.fromEntries(RESEARCH_TEXT.map(k => [k, text(i[k])])),
+        display_order: index
+    }),
+    (i) => !text(i.title),
+    RESEARCH_FIELDS,
+    'display_order'
+));
 
 const CONTACT_FIELDS = 'id, type, label, value, display_order';
 

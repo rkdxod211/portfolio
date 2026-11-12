@@ -1,6 +1,7 @@
 import React from 'react';
 import { Download } from 'lucide-react';
 import { RESUME_FILENAME } from '../siteAssets';
+import { formatPeriod } from '../format';
 
 export default function Experience({ database, resumeUrl }) {
     const handleResumeDownload = () => {
@@ -17,28 +18,16 @@ export default function Experience({ database, resumeUrl }) {
     return (
         <div>
             <h1>EXPERIENCE</h1>
-            <h2>LANGUAGES</h2>
-            <div className="experience-box">
-                <p style={{ fontSize: '20px', color: 'white', margin: 0 }}>
-                    {database.experience.languages}
-                </p>
-            </div>
             <h2>CLUBS / ACTIVITIES</h2>
             <div className="experience-box">
                 {database.experience.clubs.map((club, index) => (
-                    <div key={index} className="experience-item">
-                        <div className="experience-title">{club.title}</div>
-                        <div className="experience-detail">{club.detail}</div>
-                    </div>
+                    <ExperienceItem key={club.id || index} entry={club} />
                 ))}
             </div>
             <h2>WORK / INTERNSHIP</h2>
             <div className="experience-box">
                 {database.experience.work.map((work, index) => (
-                    <div key={index} className="experience-item">
-                        <div className="experience-title">{work.title}</div>
-                        <div className="experience-detail">{work.detail}</div>
-                    </div>
+                    <ExperienceItem key={work.id || index} entry={work} />
                 ))}
             </div>
             {resumeUrl && (
@@ -47,6 +36,19 @@ export default function Experience({ database, resumeUrl }) {
                     Download Full Resume
                 </button>
             )}
+        </div>
+    );
+}
+
+function ExperienceItem({ entry }) {
+    const period = formatPeriod(entry.start_date, entry.end_date);
+    return (
+        <div className="experience-item">
+            <div className="entry-head">
+                <div className="experience-title">{entry.title}</div>
+                {period && <span className="entry-period">{period}</span>}
+            </div>
+            <div className="experience-detail">{entry.detail}</div>
         </div>
     );
 }

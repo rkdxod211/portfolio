@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Edit2, Save, X, LogOut } from 'lucide-react';
 import ProjectVisibility from '../components/ProjectVisibility';
 import SiteAssets from '../components/SiteAssets';
+import ResearchEditor from '../components/ResearchEditor';
+import { TOOL_CATEGORIES } from './About';
+import { formatPeriod } from '../format';
 import { adminFetch } from '../adminApi';
 
 export default function Admin({ database, assets, onAssetsChange, onUpdateDatabase, onLogout, onBackToSite }) {
@@ -33,12 +36,11 @@ export default function Admin({ database, assets, onAssetsChange, onUpdateDataba
                 }
             } 
             else if (section === 'experience') {
-                const [langRes, clubsRes, workRes] = await Promise.all([
-                    putJson('/api/content/experience/languages', { languages: editedData.experience.languages }),
+                const [clubsRes, workRes] = await Promise.all([
                     putJson('/api/content/experience/clubs', { items: editedData.experience.clubs }),
                     putJson('/api/content/experience/work', { items: editedData.experience.work })
                 ]);
-                if (!langRes.ok || !clubsRes.ok || !workRes.ok) {
+                if (!clubsRes.ok || !workRes.ok) {
                     alert('ERROR');
                     return;
                 }
@@ -46,6 +48,18 @@ export default function Admin({ database, assets, onAssetsChange, onUpdateDataba
                     ...editedData,
                     experience: { ...editedData.experience, clubs: await clubsRes.json(), work: await workRes.json() }
                 };
+                setEditedData(updated);
+                onUpdateDatabase(updated);
+                setEditMode({ ...editMode, [section]: false });
+                alert('SAVED');
+            }
+            else if (section === 'research') {
+                const response = await putJson('/api/content/research', { items: editedData.research || [] });
+                if (!response.ok) {
+                    alert('ERROR');
+                    return;
+                }
+                const updated = { ...editedData, research: await response.json() };
                 setEditedData(updated);
                 onUpdateDatabase(updated);
                 setEditMode({ ...editMode, [section]: false });
@@ -119,7 +133,14 @@ export default function Admin({ database, assets, onAssetsChange, onUpdateDataba
     }));
     const updateExpItem = (key, index, field, value) =>
         setExpList(key, editedData.experience[key].map((item, i) => (i === index ? { ...item, [field]: value } : item)));
-    const addExpItem = (key) => setExpList(key, [...editedData.experience[key], { title: '', detail: '' }]);
+    const addExpItem = (key) => setExpList(key, [...editedData.experience[key], { title: '', detail: '', start_date: '', end_date: '' }]);
+
+    // About > Tools
+    const tools = editedData.about.tools || {};
+    const updateTool = (key, value) => setEditedData(prev => ({
+        ...prev,
+        about: { ...prev.about, tools: { ...(prev.about.tools || {}), [key]: value } }
+    }));
     const removeExpItem = (key, index) => setExpList(key, editedData.experience[key].filter((_, i) => i !== index));
 
     // Contact
@@ -175,24 +196,6 @@ export default function Admin({ database, assets, onAssetsChange, onUpdateDataba
                 </div>
 
                 <div className="form-group">
-                    <label className="admin-label">Introduction</label>
-                    {editMode.about ? (
-                        <textarea
-                            value={editedData.about.introduction}
-                            onChange={(e) => setEditedData({
-                                ...editedData,
-                                about: { ...editedData.about, introduction: e.target.value }
-                            })}
-                            className="admin-textarea"
-                        />
-                    ) : (
-                        <div className="admin-display-box">
-                            {editedData.about.introduction}
-                        </div>
-                    )}
-                </div>
-
-                <div className="form-group">
                     <label className="admin-label">Interests</label>
                     {editMode.about ? (
                         <textarea
@@ -209,6 +212,24 @@ export default function Admin({ database, assets, onAssetsChange, onUpdateDataba
                         </div>
                     )}
                 </div>
+
+                <h3 className="subsection-title">Tools</h3>
+                {TOOL_CATEGORIES.map(({ key, label }) => (
+                    <div className="form-group" key={key}>
+                        <label className="admin-label">{label}</label>
+                        {editMode.about ? (
+                            <input
+                                type="text"
+                                value={tools[key] || ''}
+                                onChange={(e) => updateTool(key, e.target.value)}
+                                className="admin-input"
+                                placeholder="Comma-separated, e.g. Python, Java"
+                            />
+                        ) : (
+                            <div className="admin-display-box">{tools[key]}</div>
+                        )}
+                    </div>
+                ))}
             </div>
 
             {/* Education Section */}
@@ -320,6 +341,32 @@ export default function Admin({ database, assets, onAssetsChange, onUpdateDataba
                 </div>
             </div>
 
+            {/* Research Section */}
+            <div className="admin-section">
+                <div className="section-header">
+                    <h2 className="section-title">Research Section</h2>
+                    {!editMode.research ? (
+                        <button onClick={() => handleEdit('research')} className="btn-edit">
+                            <Edit2 size={16} /> Edit
+                        </button>
+                    ) : (
+                        <div className="edit-actions">
+                            <button onClick={() => handleSave('research')} className="btn-save">
+                                <Save size={16} /> Save
+                            </button>
+                            <button onClick={() => handleCancel('research')} className="btn-cancel">
+                                <X size={16} /> Cancel
+                            </button>
+                        </div>
+                    )}
+                </div>
+                <ResearchEditor
+                    items={Array.isArray(editedData.research) ? editedData.research : []}
+                    editing={editMode.research}
+                    onChange={(list) => setEditedData(prev => ({ ...prev, research: list }))}
+                />
+            </div>
+
             {/* Experience Section */}
             <div className="admin-section">
                 <div className="section-header">
@@ -336,25 +383,6 @@ export default function Admin({ database, assets, onAssetsChange, onUpdateDataba
                             <button onClick={() => handleCancel('experience')} className="btn-cancel">
                                 <X size={16} /> Cancel
                             </button>
-                        </div>
-                    )}
-                </div>
-
-                <div className="form-group">
-                    <label className="admin-label">Languages</label>
-                    {editMode.experience ? (
-                        <input
-                            type="text"
-                            value={editedData.experience.languages}
-                            onChange={(e) => setEditedData({
-                                ...editedData,
-                                experience: { ...editedData.experience, languages: e.target.value }
-                            })}
-                            className="admin-input"
-                        />
-                    ) : (
-                        <div className="admin-display-box">
-                            {editedData.experience.languages}
                         </div>
                     )}
                 </div>
@@ -494,6 +522,12 @@ function EntryTable({ title, items, editing, onChange, onAdd, onRemove }) {
                         <tr>
                             <th>Title</th>
                             <th>Detail</th>
+                            {editing ? (
+                                <>
+                                    <th className="date-cell">Start</th>
+                                    <th className="date-cell">End</th>
+                                </>
+                            ) : <th>Dates</th>}
                             {editing && <th className="row-actions-cell">Actions</th>}
                         </tr>
                     </thead>
@@ -522,6 +556,28 @@ function EntryTable({ title, items, editing, onChange, onAdd, onRemove }) {
                                         />
                                     ) : item.detail}
                                 </td>
+                                {editing ? (
+                                    <>
+                                        <td className="date-cell">
+                                            <input
+                                                type="text"
+                                                value={item.start_date || ''}
+                                                onChange={(e) => onChange(index, 'start_date', e.target.value)}
+                                                className="table-input"
+                                                placeholder="e.g. Sep 2025"
+                                            />
+                                        </td>
+                                        <td className="date-cell">
+                                            <input
+                                                type="text"
+                                                value={item.end_date || ''}
+                                                onChange={(e) => onChange(index, 'end_date', e.target.value)}
+                                                className="table-input"
+                                                placeholder="Blank = Present"
+                                            />
+                                        </td>
+                                    </>
+                                ) : <td>{formatPeriod(item.start_date, item.end_date)}</td>}
                                 {editing && (
                                     <td className="row-actions-cell">
                                         <div className="row-actions">

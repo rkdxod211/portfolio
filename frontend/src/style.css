@@ -129,7 +129,7 @@ p {
 }
 
 .nav-link {
-    padding: 20px;
+    padding: 16px; /* six sections must fit under the photo */
     font-size: 24px;
     font-weight: 600;
     text-decoration: none;
@@ -1269,4 +1269,185 @@ p {
 .asset-empty {
     color: #6b7a8c;
     font-size: 14px;
+}
+
+/* Title on the left, dates on the right (Experience, Research) */
+.entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 6px 20px;
+    flex-wrap: wrap;
+}
+
+.entry-period {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+}
+
+/* Tag chips (About > Tools, Research fields) */
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag {
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: rgba(4, 121, 175, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* About > Tools */
+.tool-row {
+    margin-bottom: 20px;
+}
+
+.tool-row:last-child {
+    margin-bottom: 0;
+}
+
+.tool-category {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 10px;
+}
+
+/* Research */
+.research-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin: 30px 0 100px;
+}
+
+.research-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 30px;
+}
+
+.research-title {
+    font-size: 28px;
+    color: white;
+    margin: 0;
+}
+
+.research-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin-top: 8px;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.research-meta span,
+.research-footer span,
+.research-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.research-meta .research-role {
+    color: #0479AF;
+    font-weight: 700;
+}
+
+.research-card .tag-list {
+    margin-top: 16px;
+}
+
+.research-block {
+    margin-top: 20px;
+}
+
+.research-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #0479AF;
+    margin-bottom: 6px;
+}
+
+.research-question {
+    font-size: 20px;
+    font-weight: 600;
+    font-style: italic;
+    color: white;
+    border-left: 3px solid #0479AF;
+    padding-left: 12px;
+}
+
+.research-text {
+    font-size: 18px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.research-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.research-link {
+    color: white;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.research-link:hover {
+    text-decoration: underline;
+}
+
+/* Admin: Research editor and dates */
+.date-cell {
+    width: 150px;
+}
+
+.research-edit-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.research-edit-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.research-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0 16px;
+}
+
+.research-edit-field {
+    display: block;
+    margin-bottom: 12px;
+}
+
+.research-edit-field .admin-label {
+    margin-bottom: 4px;
 }

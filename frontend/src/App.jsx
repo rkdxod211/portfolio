@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import About from './pages/About';
 import Projects from './pages/Projects';
+import Research from './pages/Research';
 import Experience from './pages/Experience';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
@@ -13,18 +14,29 @@ import { fetchAssets } from './siteAssets';
 
 const initialDatabase = {
     about: {
-        introduction: '',
-        interests: ''
+        interests: '',
+        tools: {}
     },
     experience: {
-        languages: '',
         clubs: [],
         work: []
     },
     contact: [],
     projects: [],
+    research: [],
     education: []
 };
+
+// Research list, or [] if it can't be loaded so the rest of the site still renders.
+async function fetchResearch() {
+    try {
+        const res = await fetch('/api/content/research');
+        const data = res.ok ? await res.json() : [];
+        return Array.isArray(data) ? data : [];
+    } catch {
+        return [];
+    }
+}
 
 export default function App() {
     const [currentPage, setCurrentPage] = useState(0);
@@ -34,7 +46,7 @@ export default function App() {
     const [loading, setLoading] = useState(true);
     const [assets, setAssets] = useState(null); // server values { key: url | null }; null until loaded
     const scrollContainerRef = useRef(null);
-    const pages = ['home', 'about', 'projects', 'experience', 'contact'];
+    const pages = ['home', 'about', 'projects', 'research', 'experience', 'contact'];
 
     useEffect(() => {
         fetchAssets().then(setAssets);
@@ -44,12 +56,13 @@ export default function App() {
         const fetchData = async () => {
             try {
                 
-                const [aboutRes, experienceRes, contactRes, projectsRes, educationRes] = await Promise.all([
+                const [aboutRes, experienceRes, contactRes, projectsRes, educationRes, research] = await Promise.all([
                     fetch('/api/content/about'),
                     fetch('/api/content/experience'),
                     fetch('/api/content/contact'),
                     fetch('/api/projects'),
-                    fetch('/api/content/education')
+                    fetch('/api/content/education'),
+                    fetchResearch()
                 ]);
 
                 const about = await aboutRes.json();
@@ -64,6 +77,7 @@ export default function App() {
                     experience,
                     contact,
                     projects,
+                    research,
                     education
                 }));
 
@@ -145,11 +159,12 @@ export default function App() {
 
     const handleBackToSite = async () => {
         try {
-            const [aboutRes, experienceRes, contactRes, projectsRes] = await Promise.all([
+            const [aboutRes, experienceRes, contactRes, projectsRes, research] = await Promise.all([
                 fetch('/api/content/about'),
                 fetch('/api/content/experience'),
                 fetch('/api/content/contact'),
-                fetch('/api/projects')
+                fetch('/api/projects'),
+                fetchResearch()
             ]);
 
             const about = await aboutRes.json();
@@ -162,7 +177,8 @@ export default function App() {
                 about,
                 experience,
                 contact,
-                projects
+                projects,
+                research
             }));
         } catch (error) {
         }
@@ -242,7 +258,7 @@ export default function App() {
                         )}
                     </div>
                     <div className="page-section">
-                        <Experience database={database} resumeUrl={assets.resume || null} />
+                        <Research database={database} />
                         {currentPage === 3 && (
                             <div className="scroll-indicator" onClick={scrollToNext}>
                                 <span style={{ fontSize: '48px' }}>⌄</span>
@@ -250,8 +266,16 @@ export default function App() {
                         )}
                     </div>
                     <div className="page-section">
-                        <Contact database={database} />
+                        <Experience database={database} resumeUrl={assets.resume || null} />
                         {currentPage === 4 && (
+                            <div className="scroll-indicator" onClick={scrollToNext}>
+                                <span style={{ fontSize: '48px' }}>⌄</span>
+                            </div>
+                        )}
+                    </div>
+                    <div className="page-section">
+                        <Contact database={database} />
+                        {currentPage === 5 && (
                             <div className="scroll-indicator" onClick={scrollToNext}>
                                 <span style={{ fontSize: '48px' }}>⌄</span>
                             </div>

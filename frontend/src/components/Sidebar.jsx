@@ -22,6 +22,7 @@ export default function Sidebar({ currentPage, scrollToPage, pages, onAdminClick
                         {page === 'home' ? 'HOME' :
                         page === 'about' ? 'ABOUT ME' :
                         page === 'projects' ? 'PROJECTS' :
+                        page === 'research' ? 'RESEARCH' :
                         page === 'experience' ? 'EXPERIENCE' :
                         'CONTACT'}
                     </div>
