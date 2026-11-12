@@ -16,6 +16,11 @@ body {
     font-family: "Exo 2", sans-serif;
 }
 
+/* Form controls don't inherit the page font by default. */
+button, input, textarea, select {
+    font-family: inherit;
+}
+
 .app-container {
     display: flex;
     min-height: 100vh;
