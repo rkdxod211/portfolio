@@ -26,9 +26,14 @@ button, input, textarea, select {
     min-height: 100vh;
 }
 
+/* Sidebar width; the main column takes the rest. */
+:root {
+    --sidebar-w: 25%;
+}
+
 .main-content {
-    margin-left: 30%;
-    width: 70%;
+    margin-left: var(--sidebar-w);
+    width: calc(100% - var(--sidebar-w));
     position: relative;
 }
 
@@ -99,7 +104,7 @@ p {
 }
 
 .sidebar {
-    width: 30%;
+    width: var(--sidebar-w);
     height: 100vh;
     position: fixed;
     left: 0;
@@ -113,8 +118,8 @@ p {
 }
 
 .profile-img {
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 30px;
@@ -190,34 +195,36 @@ p {
     50% { background-position: 0 -100%, 0 0; }
 }
 
-/* Home: hero */
+/* Home: hero. Sized with vh so the text and the cloud strip fit on one screen. */
 .home-page {
-    padding-bottom: 170px; /* keep text clear of the cloud strip */
+    /* The 150px cloud strip sits at the section's bottom edge, overlapping the
+       section's own 50px padding, so 100px more keeps the text clear of it. */
+    padding-bottom: 100px;
 }
 
 .hero-eyebrow {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-top: 4.5%;
-    font-size: 18px;
-    font-weight: 700;
+    margin-top: 1vh;
+    font-size: 22px;
+    font-weight: 800;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.85);
+    color: #0479AF;
 }
 
 .hero-eyebrow::before {
     content: '';
     width: 40px;
-    height: 2px;
+    height: 3px;
     background: #0479AF;
 }
 
 .hero-title {
-    font-size: clamp(52px, 6vw, 88px);
+    font-size: clamp(44px, min(6vw, 9.5vh), 88px);
     line-height: 1.05;
-    margin: 16px 0 28px;
+    margin: 1.5vh 0 3vh;
     color: white;
 }
 
@@ -243,37 +250,35 @@ p {
 }
 
 .hero-tagline {
-    max-width: 760px;
+    max-width: 780px;
     padding-left: 18px;
     border-left: 4px solid #0479AF;
-    font-size: clamp(22px, 2vw, 28px);
+    font-size: clamp(20px, min(2vw, 3.3vh), 28px);
     font-weight: 600;
     line-height: 1.4;
     color: white;
-    text-shadow: 0 1px 6px rgba(4, 60, 100, 0.25);
 }
 
 .hero-tagline em {
+    font-style: normal;
     color: #0479AF;
     font-weight: 800;
 }
 
 .hero-body {
-    max-width: 720px;
-    margin-top: 28px;
+    max-width: 780px;
+    margin-top: 3vh;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    font-size: 18px;
+    gap: 1.5vh;
+    font-size: clamp(16px, 2.3vh, 18px);
     font-weight: 400;
-    line-height: 1.7;
-    color: rgba(255, 255, 255, 0.95);
-    text-shadow: 0 1px 6px rgba(4, 60, 100, 0.35); /* stays readable over light clouds */
+    line-height: 1.65;
+    color: white;
 }
 
 .hero-body strong {
-    color: white;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 /* Home: cloud buddy drifting across the sky */
@@ -282,7 +287,7 @@ p {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 170px;
+    height: 150px;
     overflow: hidden;
 }
 
@@ -301,7 +306,7 @@ p {
 
 .cloud-drift {
     position: absolute;
-    bottom: 14px;
+    bottom: 8px;
     left: -180px;
     width: 168px;
     height: 120px;
