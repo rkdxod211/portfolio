@@ -39,12 +39,33 @@ function CloudBuddy() {
 export default function Home() {
     return (
         <div className="home-page">
-            <h1>Taeyoung <br /> Kang</h1>
-            <p>
-                <span className="type" style={{ "--n": 82 }}>
-                    Hi! I'm a Computer Science student at UW-Madison, eager to learn and hone my craft as a developer!
-                </span>
-            </p>
+            <div className="hero-eyebrow">I'm Taeyoung Kang</div>
+            <h1 className="hero-title">
+                I Like to Start <br />
+                with <span className="type hero-why" style={{ '--n': 5 }}>Why.</span>
+            </h1>
+
+            <div className="hero-tagline">
+                I want to understand not just how computers work, but <em>why</em> they
+                work — and where they break.
+            </div>
+
+            <div className="hero-body">
+                <div>
+                    I'm a sophomore at the University of Wisconsin–Madison, double majoring
+                    in <strong>Computer Science and Mathematics</strong>. I'm particularly interested
+                    in <strong>cryptography</strong>, <strong>quantum computing</strong>, and
+                    the <strong>mathematical foundations of computation</strong>.
+                </div>
+                <div>
+                    I believe that truly understanding a field means looking beyond how things work
+                    and digging into the principles that make them possible. For me, mathematics
+                    provides that foundation in computer science. This curiosity draws me toward the
+                    theoretical side of cybersecurity — exploring the algorithms that protect
+                    information, the assumptions behind secure systems, and how those systems can
+                    be broken.
+                </div>
+            </div>
 
             <div className="sky-strip" aria-hidden="true">
                 {TWINKLES.map((t, i) => (

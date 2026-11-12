@@ -190,6 +190,92 @@ p {
     50% { background-position: 0 -100%, 0 0; }
 }
 
+/* Home: hero */
+.home-page {
+    padding-bottom: 170px; /* keep text clear of the cloud strip */
+}
+
+.hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 4.5%;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.hero-eyebrow::before {
+    content: '';
+    width: 40px;
+    height: 2px;
+    background: #0479AF;
+}
+
+.hero-title {
+    font-size: clamp(52px, 6vw, 88px);
+    line-height: 1.05;
+    margin: 16px 0 28px;
+    color: white;
+}
+
+/* The typing effect, scaled to the headline */
+.hero-why {
+    font-size: inherit;
+    font-weight: 900;
+}
+
+/* Blinking caret after "Why." */
+.hero-why::after {
+    content: '';
+    display: inline-block;
+    width: 0.08em;
+    height: 0.72em;
+    margin-left: 0.08em;
+    background: #0479AF;
+    animation: caret-blink 1s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+    50% { opacity: 0; }
+}
+
+.hero-tagline {
+    max-width: 760px;
+    padding-left: 18px;
+    border-left: 4px solid #0479AF;
+    font-size: clamp(22px, 2vw, 28px);
+    font-weight: 600;
+    line-height: 1.4;
+    color: white;
+    text-shadow: 0 1px 6px rgba(4, 60, 100, 0.25);
+}
+
+.hero-tagline em {
+    color: #0479AF;
+    font-weight: 800;
+}
+
+.hero-body {
+    max-width: 720px;
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 6px rgba(4, 60, 100, 0.35); /* stays readable over light clouds */
+}
+
+.hero-body strong {
+    color: white;
+    font-weight: 700;
+}
+
 /* Home: cloud buddy drifting across the sky */
 .sky-strip {
     position: absolute;
