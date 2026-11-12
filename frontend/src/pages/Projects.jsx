@@ -214,13 +214,13 @@ export default function Projects({ database }) {
                             className="project-thumbnail"
                         />
                     )}
-                    <h3 style={{ fontSize: '24px', color: 'white', margin: '10px 0' }}>
+                    <h3 style={{ fontSize: '24px', color: 'var(--ink)', margin: '10px 0' }}>
                         {project.name}
                     </h3>
                     {viewMode === 'tile' && project.description && (
                         <p style={{ 
                             fontSize: '16px', 
-                            color: 'rgba(255,255,255,0.8)', 
+                            color: 'var(--text)', 
                             margin: '10px 0',
                             lineHeight: '1.4'
                         }}>
@@ -266,13 +266,13 @@ export default function Projects({ database }) {
                         className={`view-btn ${viewMode === 'tile' ? 'active' : ''}`}
                         onClick={() => setViewMode('tile')}
                     >
-                        <Grid3x3 size={24} color="white" />
+                        <Grid3x3 size={24} />
                     </button>
                     <button 
                         className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
                         onClick={() => setViewMode('list')}
                     >
-                        <List size={24} color="white" />
+                        <List size={24} />
                     </button>
                 </div>
             </div>

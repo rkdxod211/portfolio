@@ -128,6 +128,14 @@ export default function App() {
         }
     };
 
+    // Jump (no smooth scroll) back to the first page, like a fresh load.
+    const jumpHome = () => {
+        const container = scrollContainerRef.current;
+        if (!container) return;
+        setCurrentPage(0);
+        container.scrollTo({ top: 0, behavior: 'instant' });
+    };
+
     const scrollToNext = () => {
         if (currentPage < pages.length - 1) {
             scrollToPage(currentPage + 1);
@@ -224,6 +232,7 @@ export default function App() {
             <TopNav 
                 currentPage={currentPage} 
                 scrollToPage={scrollToPage}
+                onHome={jumpHome}
                 pages={pages}
                 onAdminClick={handleAdminClick}
                 profileSrc={assets.profile || null}

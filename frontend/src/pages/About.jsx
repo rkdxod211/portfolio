@@ -32,7 +32,7 @@ export default function About({ database }) {
             </div>
             <h2>INTERESTS</h2>
             <div className="experience-box">
-                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.8)', margin: 0 }}>
+                <p style={{ fontSize: '20px', color: 'var(--text)', margin: 0 }}>
                     {database.about.interests}
                 </p>
             </div>

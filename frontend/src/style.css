@@ -7,12 +7,12 @@
 }
 
 body {
-    background-image: url('../public/images/bg.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    /* Light page with a faint dot grid, like math notebook paper */
+    background-color: var(--bg);
+    background-image: radial-gradient(#d6e0ea 1px, transparent 1.2px);
+    background-size: 22px 22px;
     background-attachment: fixed;
-    color: rgba(255,255,255,0.9);
+    color: var(--text);
     font-family: "Exo 2", sans-serif;
 }
 
@@ -28,6 +28,13 @@ button, input, textarea, select {
 
 /* Top nav height, and side padding that keeps content at most 1240px wide. */
 :root {
+    --ink: #1d3557;        /* headings, strong text */
+    --text: #3b4a5c;       /* body text */
+    --muted: #6b7a8c;      /* labels, meta */
+    --accent: #0479AF;
+    --line: #dfe7ef;       /* card borders, dividers */
+    --chip: #eef4fa;       /* tag background */
+    --bg: #f4f7fa;
     --nav-h: 72px;
     --side-pad: max(50px, calc((100vw - 1240px) / 2));
 }
@@ -60,6 +67,7 @@ button, input, textarea, select {
     cursor: pointer;
     opacity: 0.7;
     z-index: 10;
+    color: var(--muted);
 }
 
 @keyframes bounce {
@@ -80,6 +88,7 @@ h1 {
     font-size: 100px;
     margin-top: 4.5%;
     margin-bottom: 30px;
+    color: var(--ink);
 }
 
 h2 {
@@ -87,6 +96,7 @@ h2 {
     font-weight: 700;
     font-size: 50px;
     margin-bottom: 20px;
+    color: var(--ink);
 }
 
 h3 {
@@ -119,16 +129,13 @@ p {
 }
 
 /* Typing Effect */
-/* Home: hero. Sized with vh so the text and the cloud strip fit on one screen. */
+/* Home: hero. Sized with vh so it fits on one screen. */
 .home-page {
-    /* Fill the screen (minus the section's top/bottom padding) and center the
-       hero in the space above the cloud strip. The 150px strip sits at the
-       section's bottom edge over its 50px padding, so 100px more keeps it clear. */
+    /* Fill the screen under the nav and center the hero vertically. */
     min-height: calc(100vh - var(--nav-h) - 60px);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-bottom: 100px;
 }
 
 .hero-eyebrow {
@@ -139,7 +146,7 @@ p {
     font-weight: 800;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: white;
+    color: var(--ink);
 }
 
 .hero-eyebrow::before {
@@ -153,7 +160,7 @@ p {
     font-size: clamp(44px, min(5vw, 9vh), 84px);
     line-height: 1.05;
     margin: 1.5vh 0 3vh;
-    color: white;
+    color: var(--ink);
 }
 
 /* "Why." typed and deleted in a loop (see TypeLoop in Home.jsx) */
@@ -183,7 +190,7 @@ p {
     font-size: clamp(20px, min(2vw, 3.3vh), 28px);
     font-weight: 600;
     line-height: 1.4;
-    color: white;
+    color: var(--ink);
 }
 
 .hero-tagline em {
@@ -192,114 +199,24 @@ p {
     font-weight: 800;
 }
 
-/* Frosted dark-blue panel so the paragraph stays readable over bright clouds */
+/* The intro paragraph sits on a white card */
 .hero-body {
     max-width: 800px;
     margin-top: 3vh;
     padding: 2.2vh 24px;
     border-radius: 16px;
-    background: rgba(6, 50, 86, 0.3);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
+    background: white;
     font-size: clamp(16px, 2.3vh, 18px);
-    font-weight: 500;
+    font-weight: 400;
     line-height: 1.65;
-    color: white;
+    color: var(--text);
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 2px rgba(29, 53, 87, 0.04);
 }
 
 .hero-body strong {
-    font-weight: 700;
-}
-
-/* Home: cloud buddy drifting across the sky */
-.sky-strip {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 150px;
-    overflow: hidden;
-}
-
-.twinkle {
-    position: absolute;
-    fill: white;
-    opacity: 0;
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
-    animation: twinkle 4s ease-in-out infinite;
-}
-
-@keyframes twinkle {
-    0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
-    50%      { opacity: 0.9; transform: scale(1) rotate(45deg); }
-}
-
-.cloud-drift {
-    position: absolute;
-    bottom: 8px;
-    left: -180px;
-    width: 168px;
-    height: 120px;
-    animation: cloud-drift 32s linear infinite;
-}
-
-@keyframes cloud-drift {
-    from { left: -180px; }
-    to   { left: 100%; }
-}
-
-.cloud-buddy {
-    width: 168px;
-    height: 120px;
-    overflow: visible;
-    animation: cloud-bob 3s ease-in-out infinite alternate;
-}
-
-@keyframes cloud-bob {
-    from { transform: translateY(0); }
-    to   { transform: translateY(-8px); }
-}
-
-.cloud-buddy .cloud-shape {
-    fill: rgba(255, 255, 255, 0.95);
-    stroke: white;
-    stroke-width: 2;
-    stroke-linejoin: round;
-    filter: drop-shadow(0 6px 10px rgba(4, 121, 175, 0.25));
-}
-
-.cloud-buddy .cloud-eyes {
-    fill: #0479AF;
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: cloud-blink 5s infinite;
-}
-
-@keyframes cloud-blink {
-    0%, 94%, 100% { transform: scaleY(1); }
-    97%           { transform: scaleY(0.1); }
-}
-
-.cloud-buddy .cloud-blush { fill: #ffb3c7; opacity: 0.55; }
-.cloud-buddy .cloud-smile { fill: none; stroke: #0479AF; stroke-width: 2.2; stroke-linecap: round; }
-
-.cloud-buddy .orbit-ring {
-    fill: none;
-    stroke: rgba(255, 255, 255, 0.55);
-    stroke-width: 1.5;
-    stroke-dasharray: 3 5;
-}
-
-.cloud-buddy .electron {
-    fill: #0479AF;
-    stroke: white;
-    stroke-width: 1.5;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .sky-strip *, .sky-strip { animation: none !important; }
-    .cloud-drift { left: 45%; }
-    .twinkle { opacity: 0.6; }
+    font-weight: 600;
+    color: var(--ink);
 }
 
 /* Project Categories */
@@ -364,17 +281,21 @@ p {
 }
 
 .view-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid white;
+    background: white;
+    border: 1px solid var(--line);
     border-radius: 5px;
     padding: 10px;
     cursor: pointer;
     transition: all 0.3s;
+    color: var(--ink);
+    display: flex;
 }
 
 .view-btn:hover,
 .view-btn.active {
-    background: rgba(4, 121, 175, 0.4);
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
 }
 
 .projects-grid {
@@ -392,23 +313,26 @@ p {
 }
 
 .project-card {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid white;
+    background: white;
+    border: 1px solid var(--line);
     border-radius: 10px;
     padding: 20px;
     cursor: pointer;
     transition: all 0.3s;
+    box-shadow: 0 1px 2px rgba(29, 53, 87, 0.04);
 }
 
 .project-card:hover {
-    background: rgba(4, 121, 175, 0.3);
+    background: white;
     transform: translateY(-5px);
+    border-color: rgba(4, 121, 175, 0.45);
+    box-shadow: 0 10px 24px rgba(29, 53, 87, 0.08);
 }
 
 .project-thumbnail {
     width: 100%;
     height: 150px;
-    background: rgb(255,255,255,0.2);
+    background: var(--chip);
     border-radius: 5px;
     margin-bottom: 15px;
     object-fit: cover;
@@ -419,7 +343,7 @@ p {
     gap: 15px;
     font-size: 14px;
     margin-top: 10px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--muted);
 }
 
 .stat-item {
@@ -446,12 +370,13 @@ p {
 }
 
 .experience-box {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid white;
+    background: white;
+    border: 1px solid var(--line);
     border-radius: 10px;
     padding: 30px;
     margin: 30px 0;
     font-size: 20px;
+    box-shadow: 0 1px 2px rgba(29, 53, 87, 0.04);
 }
 
 .experience-item {
@@ -465,7 +390,7 @@ p {
 .experience-title {
     font-size: 24px;
     font-weight: 700;
-    color: white;
+    color: var(--ink);
 }
 
 .experience-detail {
@@ -502,14 +427,14 @@ p {
 
 .contact-headline {
     font-size: 56px;
-    color: white;
+    color: var(--ink);
     margin: 0 0 12px;
 }
 
 .contact-lede {
     font-size: 20px;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     max-width: 640px;
 }
 
@@ -542,16 +467,19 @@ p {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    background: white;
+    border: 1px solid var(--line);
     border-radius: 20px;
     padding: 18px 20px;
     transition: all 0.3s;
+    box-shadow: 0 1px 2px rgba(29, 53, 87, 0.04);
 }
 
 .contact-card:hover {
-    background: rgba(4, 121, 175, 0.3);
+    background: white;
     transform: translateY(-4px);
+    border-color: rgba(4, 121, 175, 0.45);
+    box-shadow: 0 10px 24px rgba(29, 53, 87, 0.08);
 }
 
 .contact-main {
@@ -560,7 +488,7 @@ p {
     display: flex;
     align-items: center;
     gap: 16px;
-    color: white;
+    color: var(--ink);
     text-decoration: none;
 }
 
@@ -589,7 +517,7 @@ p {
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--muted);
 }
 
 .contact-value {
@@ -608,13 +536,13 @@ p {
     border-radius: 50%;
     border: none;
     background: transparent;
-    color: white;
+    color: var(--ink);
     cursor: pointer;
     transition: background 0.3s;
 }
 
 button.contact-action:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--chip);
 }
 
 .site-footer {
@@ -628,9 +556,9 @@ button.contact-action:hover {
     gap: 12px;
     flex-wrap: wrap;
     padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: 1px solid var(--line);
     font-size: 15px;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--muted);
 }
 
 .back-to-top {
@@ -646,7 +574,7 @@ button.contact-action:hover {
 }
 
 .back-to-top:hover {
-    color: white;
+    color: var(--ink);
     text-decoration: underline;
 }
 
@@ -1038,7 +966,7 @@ button.contact-action:hover {
 
 .project-detail-header h1 {
     font-size: 80px;
-    color: white;
+    color: var(--ink);
     margin-bottom: 20px;
 }
 
@@ -1058,15 +986,16 @@ button.contact-action:hover {
     width: 100%;
     height: auto;
     border-radius: 15px;
-    border: 3px solid white;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 30px rgba(29, 53, 87, 0.1);
 }
 
 .project-detail-info {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid white;
+    background: white;
+    border: 1px solid var(--line);
     border-radius: 15px;
     padding: 40px;
+    box-shadow: 0 1px 2px rgba(29, 53, 87, 0.04);
 }
 
 .project-detail-section {
@@ -1077,7 +1006,7 @@ button.contact-action:hover {
     font-family: 'Exo 2', sans-serif;
     font-weight: 700;
     font-size: 32px;
-    color: white;
+    color: var(--ink);
     margin-bottom: 15px;
 }
 
@@ -1085,7 +1014,7 @@ button.contact-action:hover {
     font-family: 'Exo 2', sans-serif;
     font-weight: 400;
     font-size: 20px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text);
     line-height: 1.6;
 }
 
@@ -1094,15 +1023,15 @@ button.contact-action:hover {
     gap: 40px;
     margin-bottom: 30px;
     padding: 20px 0;
-    border-top: 2px solid rgba(255, 255, 255, 0.3);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
 }
 
 .detail-stat-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    color: white;
+    color: var(--ink);
     font-family: 'Exo 2', sans-serif;
     font-size: 20px;
     font-weight: 600;
@@ -1143,7 +1072,7 @@ button.contact-action:hover {
     cursor: pointer;
     transition: all 0.3s;
     text-decoration: none;
-    border: 2px solid white;
+    border: none;
 }
 
 .github-btn {
@@ -1402,7 +1331,7 @@ button.contact-action:hover {
     gap: 6px;
     font-size: 18px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--muted);
     white-space: nowrap;
 }
 
@@ -1416,9 +1345,9 @@ button.contact-action:hover {
 .tag {
     padding: 4px 14px;
     border-radius: 999px;
-    background: rgba(4, 121, 175, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    color: white;
+    background: var(--chip);
+    border: 1px solid #d6e3ef;
+    color: var(--ink);
     font-size: 15px;
     font-weight: 600;
 }
@@ -1432,10 +1361,11 @@ button.contact-action:hover {
 }
 
 .tool-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    background: white;
+    border: 1px solid var(--line);
     border-radius: 20px;
     padding: 24px 28px;
+    box-shadow: 0 1px 2px rgba(29, 53, 87, 0.04);
 }
 
 .tool-category {
@@ -1443,17 +1373,18 @@ button.contact-action:hover {
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--muted);
     margin-bottom: 16px;
 }
 
 .tool-chip {
     padding: 6px 16px;
     border-radius: 999px;
-    border: 1.5px solid rgba(255, 255, 255, 0.7);
-    color: white;
+    border: 1px solid #cfdbe7;
+    color: var(--ink);
     font-size: 17px;
     font-weight: 600; /* Exo 2 is loaded at 400/600/700+ */
+    background: white;
 }
 
 @media (max-width: 900px) {
@@ -1471,15 +1402,16 @@ button.contact-action:hover {
 }
 
 .research-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid white;
+    background: white;
+    border: 1px solid var(--line);
     border-radius: 10px;
     padding: 30px;
+    box-shadow: 0 1px 2px rgba(29, 53, 87, 0.04);
 }
 
 .research-title {
     font-size: 28px;
-    color: white;
+    color: var(--ink);
     margin: 0;
 }
 
@@ -1489,7 +1421,7 @@ button.contact-action:hover {
     gap: 6px 20px;
     margin-top: 8px;
     font-size: 18px;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
 }
 
 .research-meta span,
@@ -1525,7 +1457,7 @@ button.contact-action:hover {
     font-size: 20px;
     font-weight: 600;
     font-style: italic;
-    color: white;
+    color: var(--ink);
     border-left: 3px solid #0479AF;
     padding-left: 12px;
 }
@@ -1533,7 +1465,7 @@ button.contact-action:hover {
 .research-text {
     font-size: 18px;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
 }
 
 .research-footer {
@@ -1542,13 +1474,13 @@ button.contact-action:hover {
     gap: 8px 24px;
     margin-top: 20px;
     padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: 1px solid var(--line);
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
 }
 
 .research-link {
-    color: white;
+    color: var(--accent);
     font-weight: 700;
     text-decoration: none;
 }
@@ -1599,25 +1531,94 @@ button.contact-action:hover {
     right: 0;
     height: var(--nav-h);
     z-index: 100;
-    display: flex;
+    display: grid;
     align-items: center;
-    gap: 24px;
     padding: 0 var(--side-pad);
-    background: rgba(218, 234, 246, 0.8);
+    background: rgba(255, 255, 255, 0.92);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid #e6ecf2;
+    grid-template-columns: 1fr auto 1fr;
+    column-gap: 24px;
 }
 
 .topnav-brand {
     display: flex;
     align-items: center;
     gap: 14px;
-    background: none;
-    border: none;
+    justify-self: start;
+}
+
+/* The photo opens a small dropdown with Admin */
+.topnav-menu-wrap {
+    position: relative;
+}
+
+.topnav-photo-btn {
+    display: block;
     padding: 0;
+    border: none;
+    background: none;
+    border-radius: 12px;
     cursor: pointer;
-    flex-shrink: 0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.topnav-photo-btn:hover,
+.topnav-photo-btn[aria-expanded="true"] {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 3px rgba(4, 121, 175, 0.18);
+}
+
+.topnav-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    min-width: 160px;
+    padding: 6px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(29, 53, 87, 0.14);
+    animation: menu-pop 0.16s ease-out;
+    transform-origin: top left;
+}
+
+@keyframes menu-pop {
+    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+}
+
+.topnav-menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+
+.topnav-menu-item:hover {
+    background: var(--chip);
+    color: var(--accent);
+}
+
+.topnav-name {
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: var(--ink);
+    white-space: nowrap;
+    cursor: pointer;
 }
 
 .topnav-photo {
@@ -1625,18 +1626,10 @@ button.contact-action:hover {
     height: 44px;
     border-radius: 12px;
     object-fit: cover;
-    border: 2px solid white;
-}
-
-.topnav-name {
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: 3px;
-    color: #1d3557;
+    border: 1px solid var(--line);
 }
 
 .topnav-links {
-    flex: 1;
     display: flex;
     justify-content: center;
     gap: 6px;
@@ -1683,26 +1676,6 @@ button.contact-action:hover {
     transform: scaleX(1);
 }
 
-.topnav-admin {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: #0479AF;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.topnav-admin:hover {
-    background: #035a80;
-}
-
 @media (max-width: 900px) {
     .topnav-name {
         display: none;
@@ -1713,7 +1686,7 @@ button.contact-action:hover {
     }
 }
 
-/* Home: text on the left, chalkboard on the right */
+/* Home: text on the left, whiteboard on the right */
 .hero-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
@@ -1726,160 +1699,133 @@ button.contact-action:hover {
         grid-template-columns: 1fr;
     }
 
-    .chalkboard {
+    .whiteboard {
         max-width: 520px;
     }
 }
 
-/* Chalkboard */
-.chalkboard {
-    position: relative;
+/* Whiteboard: blue marker on a light grid, matching the site palette */
+.whiteboard {
     width: 100%;
     max-width: 560px;
     justify-self: center;
-    padding: 12px 12px 0;
-    border-radius: 16px;
-    background: #8a5a32;
-    box-shadow: 0 18px 40px rgba(4, 50, 86, 0.25), inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+    padding: 10px;
+    border-radius: 22px;
+    background: white;
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 60px rgba(29, 53, 87, 0.08);
 }
 
-.chalkboard-svg {
+.whiteboard-svg {
     display: block;
     width: 100%;
     aspect-ratio: 4 / 3;
-    border-radius: 8px;
-    background:
-        radial-gradient(ellipse at 22% 30%, rgba(255, 255, 255, 0.06), transparent 45%),
-        radial-gradient(ellipse at 75% 70%, rgba(255, 255, 255, 0.05), transparent 40%),
-        radial-gradient(ellipse at 60% 15%, rgba(255, 255, 255, 0.04), transparent 35%),
-        #2a3b36;
-    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.45);
+    border-radius: 14px;
+    background-color: #fbfdff;
+    background-image:
+        linear-gradient(#edf2f7 1px, transparent 1px),
+        linear-gradient(90deg, #edf2f7 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -1px -1px;
 }
 
-.chalk-tray {
-    position: relative;
-    height: 16px;
-    margin: 0 -12px;
-    border-radius: 0 0 16px 16px;
-    background: #73492a;
-}
-
-.chalk-stick {
-    position: absolute;
-    left: 22%;
-    top: 3px;
-    width: 34px;
-    height: 7px;
-    border-radius: 3px;
-    background: #f4f1ea;
-}
-
-.chalk-eraser {
-    position: absolute;
-    right: 18%;
-    top: -2px;
-    width: 58px;
-    height: 13px;
-    border-radius: 3px;
-    background: linear-gradient(#3a3f45 0 45%, #d8cfc0 45%);
-}
-
-.chalk-text {
+.wb-text {
     font-family: 'Caveat', cursive;
     font-weight: 700;
-    fill: rgba(255, 255, 255, 0.9);
+    fill: var(--ink);
 }
 
-.chalk-ink path,
-.chalk-ink circle,
-.chalk-ink line {
+.wb-text.accent {
+    fill: var(--accent);
+}
+
+.wb-ink path,
+.wb-ink circle,
+.wb-ink line {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.88);
-    stroke-width: 3;
+    stroke: var(--accent);
+    stroke-width: 2.6;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
-.chalk-ink .chalk-dot,
-.chalk-ink .chalk-node {
-    fill: rgba(255, 255, 255, 0.9);
+.wb-ink .wb-dot {
+    fill: var(--accent);
     stroke: none;
 }
 
-.chalk-ink .chalk-node {
-    fill: #2a3b36;
-    stroke: rgba(255, 255, 255, 0.88);
-    stroke-width: 3;
+.wb-ink .wb-node {
+    fill: white;
+    stroke: var(--accent);
+    stroke-width: 2.6;
 }
 
-.chalk-ink .chalk-dashed {
+.wb-ink .wb-dashed {
     stroke-dasharray: 5 7;
-    opacity: 0.6;
 }
 
 /* Each cycle: draw, hold, then wipe the board */
-.chalk-ink {
-    animation: chalk-erase var(--cycle) linear forwards;
+.wb-ink {
+    animation: wb-erase var(--cycle) linear forwards;
 }
 
-@keyframes chalk-erase {
+@keyframes wb-erase {
     0%, 90% { opacity: 1; }
     96%, 100% { opacity: 0; }
 }
 
-.chalk-draw {
+.wb-draw {
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
-    animation: chalk-draw var(--t) ease-out var(--d) forwards;
+    animation: wb-draw var(--t) ease-out var(--d) forwards;
 }
 
-@keyframes chalk-draw {
+@keyframes wb-draw {
     to { stroke-dashoffset: 0; }
 }
 
-/* Letters fade in one by one (tspans only support fill-opacity, not opacity) */
-.chalk-char {
+/* Letters appear one by one (tspans only support fill-opacity, not opacity) */
+.wb-char {
     fill-opacity: 0;
-    animation: chalk-char-in 0.18s linear var(--d) forwards;
+    animation: wb-char-in 0.18s linear var(--d) forwards;
 }
 
-@keyframes chalk-char-in {
+@keyframes wb-char-in {
     to { fill-opacity: 1; }
 }
 
-.chalk-fade {
+.wb-fade {
     opacity: 0;
-    animation: chalk-in 0.18s linear var(--d) forwards;
+    animation: wb-in 0.18s linear var(--d) forwards;
 }
 
-.chalk-ink .chalk-dashed.chalk-fade {
-    opacity: 0;
-    animation-name: chalk-in-dashed;
+.wb-ink .wb-dashed.wb-fade {
+    animation-name: wb-in-dashed;
 }
 
-@keyframes chalk-in {
+@keyframes wb-in {
     to { opacity: 1; }
 }
 
-@keyframes chalk-in-dashed {
-    to { opacity: 0.6; }
+@keyframes wb-in-dashed {
+    to { opacity: 0.5; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .chalk-ink,
-    .chalk-draw,
-    .chalk-fade {
+    .wb-ink,
+    .wb-draw,
+    .wb-fade {
         animation: none;
         opacity: 1;
         stroke-dashoffset: 0;
     }
 
-    .chalk-char {
+    .wb-char {
         animation: none;
         fill-opacity: 1;
     }
 
-    .chalk-ink .chalk-dashed.chalk-fade {
-        opacity: 0.6;
+    .wb-ink .wb-dashed.wb-fade {
+        opacity: 0.5;
     }
 }

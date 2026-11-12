@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Lock } from 'lucide-react';
 
 const LABELS = {
@@ -10,16 +10,54 @@ const LABELS = {
     contact: 'CONTACT'
 };
 
-// Fixed bar across the top: photo + name on the left, sections, Admin on the right.
-export default function TopNav({ currentPage, scrollToPage, pages, onAdminClick, profileSrc }) {
+// Fixed bar across the top. The photo opens a small menu (Admin); the name
+// jumps straight back to the first page.
+export default function TopNav({ currentPage, scrollToPage, onHome, pages, onAdminClick, profileSrc }) {
+    const [menuOpen, setMenuOpen] = useState(false);
+    const menuRef = useRef(null);
+
+    // Close the menu on an outside click or Escape.
+    useEffect(() => {
+        if (!menuOpen) return undefined;
+        const onPointer = (e) => { if (!menuRef.current?.contains(e.target)) setMenuOpen(false); };
+        const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+        document.addEventListener('pointerdown', onPointer);
+        document.addEventListener('keydown', onKey);
+        return () => {
+            document.removeEventListener('pointerdown', onPointer);
+            document.removeEventListener('keydown', onKey);
+        };
+    }, [menuOpen]);
+
     return (
         <header className="topnav">
-            <button className="topnav-brand" onClick={() => scrollToPage(0)}>
-                {profileSrc
-                    ? <img src={profileSrc} alt="" className="topnav-photo" />
-                    : <span className="topnav-photo profile-placeholder" aria-hidden="true" />}
-                <span className="topnav-name">TAEYOUNG KANG</span>
-            </button>
+            <div className="topnav-brand">
+                <div className="topnav-menu-wrap" ref={menuRef}>
+                    <button
+                        className="topnav-photo-btn"
+                        onClick={() => setMenuOpen(open => !open)}
+                        aria-haspopup="menu"
+                        aria-expanded={menuOpen}
+                        aria-label="Open menu"
+                    >
+                        {profileSrc
+                            ? <img src={profileSrc} alt="" className="topnav-photo" />
+                            : <span className="topnav-photo profile-placeholder" />}
+                    </button>
+                    {menuOpen && (
+                        <div className="topnav-menu" role="menu">
+                            <button
+                                role="menuitem"
+                                className="topnav-menu-item"
+                                onClick={() => { setMenuOpen(false); onAdminClick(); }}
+                            >
+                                <Lock size={16} /> Admin
+                            </button>
+                        </div>
+                    )}
+                </div>
+                <button className="topnav-name" onClick={onHome}>TAEYOUNG KANG</button>
+            </div>
 
             <nav className="topnav-links">
                 {pages.map((page, index) => (
@@ -33,10 +71,8 @@ export default function TopNav({ currentPage, scrollToPage, pages, onAdminClick,
                 ))}
             </nav>
 
-            <button onClick={onAdminClick} className="topnav-admin">
-                <Lock size={16} />
-                Admin
-            </button>
+            {/* Balances the brand so the links sit in the true center */}
+            <div className="topnav-spacer" aria-hidden="true" />
         </header>
     );
 }
