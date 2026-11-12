@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&display=swap');
 
 * {
     margin: 0;
@@ -173,8 +173,13 @@ p {
 /* Typing Effect */
 /* Home: hero. Sized with vh so the text and the cloud strip fit on one screen. */
 .home-page {
-    /* The 150px cloud strip sits at the section's bottom edge, overlapping the
-       section's own 50px padding, so 100px more keeps the text clear of it. */
+    /* Fill the screen (minus the section's 50px top/bottom padding) and center
+       the text in the space above the cloud strip. The 150px strip sits at the
+       section's bottom edge over its 50px padding, so 100px more keeps it clear. */
+    min-height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding-bottom: 100px;
 }
 
@@ -182,12 +187,11 @@ p {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-top: 1vh;
     font-size: 22px;
     font-weight: 800;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.85);
+    color: white;
 }
 
 .hero-eyebrow::before {
@@ -240,20 +244,26 @@ p {
     font-weight: 800;
 }
 
+/* Frosted dark-blue panel so the paragraphs stay readable over bright clouds */
 .hero-body {
-    max-width: 780px;
+    max-width: 800px;
     margin-top: 3vh;
+    padding: 2.2vh 24px;
+    border-radius: 16px;
+    background: rgba(6, 50, 86, 0.3);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
     display: flex;
     flex-direction: column;
     gap: 1.5vh;
     font-size: clamp(16px, 2.3vh, 18px);
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.65;
     color: white;
 }
 
 .hero-body strong {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 /* Home: cloud buddy drifting across the sky */
