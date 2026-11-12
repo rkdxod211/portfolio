@@ -39,9 +39,10 @@ export default function TopNav({ currentPage, scrollToPage, onHome, pages, onAdm
                         aria-haspopup="menu"
                         aria-expanded={menuOpen}
                         aria-label="Open menu"
+                        onContextMenu={(e) => e.preventDefault()}
                     >
                         {profileSrc
-                            ? <img src={profileSrc} alt="" className="topnav-photo" />
+                            ? <img src={profileSrc} alt="" className="topnav-photo" draggable={false} />
                             : <span className="topnav-photo profile-placeholder" />}
                     </button>
                     {menuOpen && (
@@ -70,9 +71,6 @@ export default function TopNav({ currentPage, scrollToPage, onHome, pages, onAdm
                     </button>
                 ))}
             </nav>
-
-            {/* Balances the brand so the links sit in the true center */}
-            <div className="topnav-spacer" aria-hidden="true" />
         </header>
     );
 }
