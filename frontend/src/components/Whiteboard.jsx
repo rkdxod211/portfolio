@@ -69,7 +69,7 @@ function Doodles() {
             <path className="wb-fade wb-dot" style={{ '--d': '5.3s' }} d="M481.5 88 a4.5 4.5 0 1 0 9 0 a4.5 4.5 0 1 0 -9 0" />
             <BoardText x={448} y={46} size={26} start={5.4} step={0.08} parts={['|0⟩']} />
             <BoardText x={448} y={232} size={26} start={5.7} step={0.08} parts={['|1⟩']} />
-            <BoardText x={492} y={82} size={24} start={6.0} step={0.08} parts={['ψ']} />
+            <BoardText x={503} y={70} size={24} start={6.0} step={0.08} parts={['ψ']} />
 
             {/* Qubit state */}
             <BoardText x={42} y={206} size={38} start={6.3} step={0.09} parts={['|ψ⟩ = α|0⟩ + β|1⟩']} />
